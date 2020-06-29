@@ -5,8 +5,8 @@ import numpy as np
 import json
 
 data_path = sys.argv[1]
-review_sample_rate = float(sys.argv[2]) # Percentage of reviews used for test for each user
-query_sample_rate = float(sys.argv[3]) # Percetage of queries that are unique in testing
+review_sample_rate = float(sys.argv[2])  # Percentage of reviews used for test for each user
+query_sample_rate = float(sys.argv[3])  # Percentage of queries that are unique in testing
 output_path = data_path + 'seq_query_split/'
 if not os.path.exists(output_path):
     os.makedirs(output_path)

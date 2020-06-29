@@ -49,7 +49,7 @@ with gzip.open(output_path + 'product.txt.gz','wt') as fout:
 	for product in product_list:
 		fout.write(product + '\n')
 
-#read and output indexed reviews
+# read and output indexed reviews 将一个集合转换成一个字典，key是集合中的元素，value是序号
 def index_set(s):
 	i = 0
 	s_map = {}
@@ -57,6 +57,8 @@ def index_set(s):
 		s_map[key] = str(i)
 		i += 1
 	return s_map
+
+
 word_map = index_set(word_list)
 user_map = index_set(user_list)
 product_map = index_set(product_list)

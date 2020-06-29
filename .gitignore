@@ -9,6 +9,10 @@
 
 # ignore dataset
 amazon_cellphone_index_dataset/
+data/
+indexed_data/
 
 # galago dataset
 galago-3.16-bin/
+
+.idea/
