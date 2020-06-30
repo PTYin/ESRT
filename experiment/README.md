@@ -20,7 +20,7 @@ index_and_filter_review_file.py
 
 将所有的word,user_id,product_id分别输出到以上三个文件，索引文件
 
-- output_path + 'review_text.txt.gz'：各个词的序号，一行是一个review的词（过滤过）
+- output_path + 'review_text.txt.gz'：各个词的序号，一行是一个review的词的序号（过滤过）
 - output_path + 'review_u_p.txt.gz'：每行两个序号，分别对应该行评论的user序号和product序号
 - output_path + 'review_id.txt.gz'：顾名思义，review的id，实际上就是在每行记录一下其在review_file中的序号（因为可能存在某些review没有word）
 - output_path + 'review_rating.txt.gz'：每行对应该行review给出的评分
@@ -45,8 +45,8 @@ AmazonMetaData_matching.jar
 
 ### Output
 
-- indexed_review_path + "product_des.txt.gz"：通过提取metadata中的"title"/"description"两个field中的词获得产品的description，每一行代表一个产品，每行的数字是word的序号
-- indexed_review_path + "product_query.txt.gz"：通过提取metadata中的"category"field中的词获得query，每一行代表一个产品，开头c+数字，数字代表该产品subcategory的数量，制表符后面的数字是word的序号
+- indexed_review_path + "product_des.txt.gz"：通过提取metadata中的"title"/"description"两个field中的词获得产品的description，每一行代表一个product，每行的数字是word的序号（vocab.txt.gz指定）
+- indexed_review_path + "product_query.txt.gz"：通过提取metadata中的"category"field中的词获得query，每一行代表一个product（行号与product.txt.gz行号对应），开头c+数字，数字代表该产品subcategory的数量，制表符后面的数字是word的序号
 
 ## 3. Gather knowledge from meta data
 
@@ -88,8 +88,32 @@ sequentially_split_train_test_data.py
 
 第二个和第三个参数分别指示对于每个用户用于测试的reviews比例、在测试中没有在训练集出现过的query比例
 
+### Algorithm
+
+1. 若随机生成的训练集中某个product没有query那么从测试集随机抽取该product的一个query到训练集中。
+2. 测试集中有所有的query，但是训练集中只有一部分query，但如上所说保证对于每个product至少有一个query在训练集中
+
 ### Output
 
 - output_path + 'train.txt.gz'
 - output_path + 'test.txt.gz'
-- 
+
+以上两个文件分别是训练集和测试集的review文本信息，每行开头是评论的user序号，接着一个制表符，再跟着评论的product序号，再制表符，后面就是review中的word序号
+
+- output_path + 'train_id.txt.gz'
+- output_path + 'test_id.txt.gz'
+
+以上两个文件分别是训练集和测试集的review id信息，每行开头是评论的user序号，接着一个制表符，再跟着评论的product序号，再制表符，后面就是review的序号（由review.txt.gz指明）
+
+- output_path + 'query.txt.gz'：训练集和测试集中所有的query，每行空格分隔开word（vocab.txt.gz指定）
+- output_path + 'train_query_idx.txt.gz'：训练集中query的id，每行对应一个product（行号与product.txt.gz行号对应），每行若干个query词序号
+- output_path + 'test_query_idx.txt.gz'：同上，但为测试集
+
+以上用于模型输入
+
+- output_path + 'test.qrels'
+- output_path + 'test_query.json'
+- output_path + 'train.qrels'
+- output_path + 'train_query.json'
+
+以上用于利用galago进行evaluation
