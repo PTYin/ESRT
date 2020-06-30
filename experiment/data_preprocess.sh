@@ -17,6 +17,6 @@ java -Xmx16G -jar ../seq_utils/AmazonDataset/jar/AmazonMetaData_matching.jar fal
 python ../seq_utils/AmazonDataset/match_with_meta_knowledge.py /home/share/yinxiangkun/indexed_data/seq_min_count5/ /home/share/yinxiangkun/metadata.json.gz
 
 # Sequentially split train/test
-python ./seq_utils/AmazonDataset/sequentially_split_train_test_data.py /home/share/yinxiangkun/indexed_data/seq_min_count5/ 0.3 0.3
+python ../seq_utils/AmazonDataset/sequentially_split_train_test_data.py /home/share/yinxiangkun/indexed_data/seq_min_count5/ 0.3 0.3
 
 
