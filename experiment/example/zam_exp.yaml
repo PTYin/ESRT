@@ -3,8 +3,8 @@ arch:
   learning_algorithm: "esrt.models.ZAM"
   dataset_type: "esrt.dataset.ZAMDataset"
 data:
-  data_dir: "./amazon_cellphone_index_dataset/seq_min_count5/"
-  input_train_dir: "./amazon_cellphone_index_dataset/seq_min_count5/seq_query_split/"
+  data_dir: "/home/share/yinxiangkun/indexed_data/seq_min_count5/"
+  input_train_dir: "/home/share/yinxiangkun/indexed_data/seq_min_count5/seq_query_split/"
   model_dir: "./zam_tmp/"
   logging_dir: "./zam_log/"
 

@@ -8,6 +8,6 @@ if ! [ -d "./galago-3.16-bin/" ]; then
 fi
 
 # evaluate AEM
-./galago-3.16-bin/bin/galago eval --judgments= ./amazon_cellphone_index_dataset/seq_min_count5/seq_query_split/test.qrels --runs+ ./aem_tmp/test.bias_product.ranklist  --metrics+recip_rank --metrics+ndcg10 --metrics+P10
+./galago-3.16-bin/bin/galago eval --judgments= /home/share/yinxiangkun/indexed_data/seq_min_count5/seq_query_split/test.qrels --runs+ ./aem_tmp/test.bias_product.ranklist  --metrics+recip_rank --metrics+ndcg10 --metrics+P10
 
 
