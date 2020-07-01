@@ -5,8 +5,8 @@ arch:
 data:
   data_dir: "/home/share/yinxiangkun/automotive/seq_min_count5/"
   input_train_dir: "/home/share/yinxiangkun/automotive/seq_min_count5/seq_query_split/"
-  model_dir: "./aem_tmp_automotive/"
-  logging_dir: "./aem_log_automotive/"
+  model_dir: "./aem_tmp_300_automotive/"
+  logging_dir: "./aem_log_300_automotive/"
 
 experiment:
   subsampling_rate: 0.0001
