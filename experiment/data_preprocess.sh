@@ -8,7 +8,7 @@
 #java -Xmx4g -jar ./seq_utils/AmazonDataset/jar/AmazonReviewData_preprocess.jar false ./reviews_Cell_Phones_and_Accessories_5.json.gz ./reviews_Cell_Phones_and_Accessories_5.processed.gz
 
 # Index dataset
-python ../seq_utils/AmazonDataset/index_and_filter_review_file.py /home/share/yinxiangkun/reviews_Musical_Instruments_5.json.gz /home/share/yinxiangkun/automotive/ 5
+python ../seq_utils/AmazonDataset/index_and_filter_review_file.py /home/share/yinxiangkun/reviews_Automotive_5.json.gz /home/share/yinxiangkun/automotive/ 5
 
 # Match the meta data with the indexed data to extract queries:
 java -Xmx16G -jar ../seq_utils/AmazonDataset/jar/AmazonMetaData_matching.jar false /home/share/yinxiangkun/metadata.json.gz /home/share/yinxiangkun/automotive/seq_min_count5/
