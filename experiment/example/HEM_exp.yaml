@@ -3,10 +3,10 @@ arch:
   learning_algorithm: "esrt.models.HEM"
   dataset_type: "esrt.dataset.HEMDataset"
 data:
-  data_dir: "/home/share/yinxiangkun/indexed_data/seq_min_count5/" #"../seq_tmp_data/min_count5/" #"amazon_cellphone_index_dataset/seq_min_count5/"
-  input_train_dir: "/home/share/yinxiangkun/indexed_data/seq_min_count5/seq_query_split/"  #"amazon_cellphone_index_dataset/seq_min_count5/seq_query_split/"
-  model_dir: "./hem_tmp/"
-  logging_dir: "./hem_log/"
+  data_dir: "/home/share/yinxiangkun/automotive/seq_min_count5/" #"../seq_tmp_data/min_count5/" #"amazon_cellphone_index_dataset/seq_min_count5/"
+  input_train_dir: "/home/share/yinxiangkun/automotive/seq_min_count5/seq_query_split/"  #"amazon_cellphone_index_dataset/seq_min_count5/seq_query_split/"
+  model_dir: "./hem_tmp_automotive/"
+  logging_dir: "./hem_log_automotive/"
 
 experiment:
   subsampling_rate: 0.0001

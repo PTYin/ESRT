@@ -3,10 +3,10 @@ arch:
   learning_algorithm: "esrt.models.ZAM"
   dataset_type: "esrt.dataset.ZAMDataset"
 data:
-  data_dir: "/home/share/yinxiangkun/indexed_data/seq_min_count5/"
-  input_train_dir: "/home/share/yinxiangkun/indexed_data/seq_min_count5/seq_query_split/"
-  model_dir: "./zam_tmp/"
-  logging_dir: "./zam_log/"
+  data_dir: "/home/share/yinxiangkun/automotive/seq_min_count5/"
+  input_train_dir: "/home/share/yinxiangkun/automotive/seq_min_count5/seq_query_split/"
+  model_dir: "./zam_tmp_automotive/"
+  logging_dir: "./zam_log_automotive/"
 
 experiment:
   subsampling_rate: 0.0001
