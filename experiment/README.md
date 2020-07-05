@@ -106,7 +106,7 @@ sequentially_split_train_test_data.py
 以上两个文件分别是训练集和测试集的review id信息，每行开头是评论的user序号，接着一个制表符，再跟着评论的product序号，再制表符，后面就是review的序号（由review.txt.gz指明）
 
 - output_path + 'query.txt.gz'：训练集和测试集中所有的query，每行空格分隔开word（vocab.txt.gz指定）
-- output_path + 'train_query_idx.txt.gz'：训练集中query的id，每行对应一个product（行号与product.txt.gz行号对应），每行若干个query词序号
+- output_path + 'train_query_idx.txt.gz'：训练集中query的id，每行对应一个product（行号与product.txt.gz行号对应），每行若干个query（query.txt.gz指定）
 - output_path + 'test_query_idx.txt.gz'：同上，但为测试集
 
 以上用于模型输入
