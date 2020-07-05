@@ -424,7 +424,7 @@ def main():
     transform.index_and_filter_review_file()
     # match_and_create_knowledge
     print('Gather knowledge from meta data')
-    # transform.match_and_create_knowledge()
+    transform.match_and_create_knowledge()
 
     users, products, reviews, queries = transform.read_from_csv(full_csv)
     train_users, train_products, train_reviews, train_queries = transform.read_from_csv(train_csv)
