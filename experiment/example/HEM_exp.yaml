@@ -3,7 +3,7 @@ arch:
   learning_algorithm: "esrt.models.HEM"
   dataset_type: "esrt.dataset.HEMDataset"
 data:
-  data_dir: "/home/share/yinxiangkun//seq_min_count5/" #"../seq_tmp_data/min_count5/"
+  data_dir: "/home/share/yinxiangkun/automotive/seq_min_count5/" #"../seq_tmp_data/min_count5/"
   input_train_dir: "/home/share/yinxiangkun/automotive/seq_min_count5/seq_query_split/"
   model_dir: "./hem_tmp_100_automotive/"
   logging_dir: "./hem_log_100_automotive/"
