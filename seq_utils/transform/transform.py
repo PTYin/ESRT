@@ -1,5 +1,6 @@
 import argparse
 import gzip
+import operator
 import json
 import os
 import ast
@@ -128,6 +129,18 @@ class Transform:
                             fout_rating.write(str(rating))
                             count_valid_review += 1
                         index += 1
+
+        # Sort each user's reviews according to time and output to files
+        review_loc_time_list = [[] for _ in range(count_valid_review)]
+        with gzip.open(output_path + 'u_r_seq.txt.gz', 'wt') as fout:
+            for user in self.user_list:
+                review_time_list = user_review_seq[user]
+                user_review_seq[user] = sorted(review_time_list, key=operator.itemgetter(1))
+                fout.write(' '.join([str(x[0]) for x in user_review_seq[user]]) + '\n')
+                for i in range(len(user_review_seq[user])):
+                    review_id = user_review_seq[user][i][0]
+                    time = user_review_seq[user][i][1]
+                    review_loc_time_list[review_id] = [i, time]
 
     def match_and_create_knowledge(self):
         """
