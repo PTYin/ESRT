@@ -111,11 +111,11 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--review_file', 
         type=str,
-        default='../../data/reviews_Musical_Instruments_5.json.gz',
+        default='../reviews_Automotive_5.json.gz',
         help="5 core review file")
     parser.add_argument('--meta_file', 
         type=str,
-        default='../../data/meta_Musical_Instruments.json.gz',
+        default='../metadata.json.gz',
         help="meta data file for the corresponding review file")
     parser.add_argument('--count', 
         type=int, 

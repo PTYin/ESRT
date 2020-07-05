@@ -3,10 +3,10 @@
 dataset = 'Automotive'
 
 # paths
-main_path = './'
+main_path = '/home/share/yinxiangkun/automotive/'
 stop_file = './stopwords.txt'
 
-processed_path = './processed/'
+processed_path = '/home/share/yinxiangkun/automotive/processed/'
 
 full_path = main_path + '{}_full.csv'.format(dataset)
 train_path = main_path + '{}_train.csv'.format(dataset)
