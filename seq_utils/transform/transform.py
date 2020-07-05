@@ -248,11 +248,25 @@ class Transform:
 
     def read_from_csv(self, path):
         df = pd.read_csv(path)
-        users = list(map(lambda user: self.user_map[user], df['reviewerID'].tolist()))
-        products = list(map(lambda product: self.product_map[product], df['asin'].tolist()))
-        reviews = list(map(lambda review: eval(review), df['reviewText'].tolist()))
-        queries = list(map(lambda query: eval(query), df['query_'].tolist()))
+        # users = list(map(lambda user: self.user_map[user], df['reviewerID'].tolist()))
+        # products = list(map(lambda product: self.product_map[product], df['asin'].tolist()))
+        # reviews = list(map(lambda review: eval(review), df['reviewText'].tolist()))
+        # queries = list(map(lambda query: eval(query), df['query_'].tolist()))
+        df_users = df['reviewerID'].tolist()
+        df_products = df['asin'].tolist()
+        df_reviews = df['reviewText'].tolist()
+        df_queries = df['query_'].tolist()
+        users = []
+        products = []
+        reviews = []
+        queries = []
 
+        for i in range(len(df_users)):
+            if len(eval(df_reviews[i])) != 0:
+                users.append(self.user_map[df_users[i]])
+                products.append(self.product_map[df_products[i]])
+                reviews.append(eval(df_reviews[i]))
+                queries.append(eval(df_queries[i]))
         return users, products, reviews, queries
 
     def build_vocab_map(self, reviews, queries):
@@ -386,7 +400,7 @@ def main():
     test_users, test_products, test_reviews, test_queries = transform.read_from_csv(test_csv)
 
     print('generate vocab.txt.gz')
-    transform.build_vocab_map(reviews, queries)
+    transform.build_vocab_map(train_reviews, train_queries)
     transform.build_vocab_map(test_reviews, test_queries)
     transform.generate_vocab_file()  # vocab.txt.gz
     print('generate query.txt.gz')
