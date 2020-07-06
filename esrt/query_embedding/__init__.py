@@ -6,9 +6,9 @@ def get_query_embedding(model, word_idxs, word_emb, reuse, scope=None):
     Args:
     Return:
     """
-    if 'fs' in model.params['net_struct']:
-        return get_fs_from_words(model, word_idxs, word_emb, reuse, scope)
+    # if 'fs' in model.params['net_struct']:
+    return get_fs_from_words(model, word_idxs, word_emb, reuse, scope)
 
-    else:
-        raise ValueError(f"The net struct: \'{model.params['net_struct']}\',  \
-                        is not predefined for computing the query embedding.")
+    # else:
+    #     raise ValueError(f"The net struct: \'{model.params['net_struct']}\',  \
+    #                     is not predefined for computing the query embedding.")

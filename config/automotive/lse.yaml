@@ -1,6 +1,6 @@
 arch:
   input_feed: "esrt.input_feed.HEMInputFeed"
-  learning_algorithm: "esrt.models.HEM"
+  learning_algorithm: "esrt.models.LSE"
   dataset_type: "esrt.dataset.HEMDataset"
 data:
   data_dir: "/home/share/yinxiangkun/transformed/automotive/seq_min_count5/"
