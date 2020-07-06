@@ -325,8 +325,6 @@ class Transform:
     def generate_query_idx_file(self, flag, products, queries):
         with gzip.open(os.path.join(self.split_output_path, flag + '_query_idx.txt.gz'), 'wt') as output:
             for product in self.product_list:
-                if self.product_map[product] == 137:
-                    print(product)
                 if self.product_map[product] in products:
                     category = map(lambda word: str(self.word_map[word]), queries[products.index(self.product_map[product])])
                 else:
