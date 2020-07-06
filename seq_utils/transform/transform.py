@@ -6,8 +6,6 @@ import os
 import ast
 import pandas as pd
 
-import config
-
 
 class Transform:
     def __init__(self, review_file, output_path, meta_file):
@@ -397,6 +395,11 @@ def main():
                         type=str,
                         default='../../data/meta_Musical_Instruments.json.gz',
                         help="meta data file for the corresponding review file")
+    parser.add_argument('--dataset',
+                        type=str,
+                        default='automotive',
+                        help="Amazon Dataset(Automotive/Cell_Phones_and_Accessories/Clothing_Shoes_and_Jewelry"
+                             "/Digital_Music/Electronics/Toys_and_Games)")
     # parser.add_argument('--csv_dir',
     #                     type=str,
     #                     default='/home/share/yinxiangkun/automotive',
@@ -414,9 +417,9 @@ def main():
     #                     default='/home/share/yinxiangkun/metadata.json.gz',
     #                     help="meta data file for the corresponding review file")
     FLAGS = parser.parse_args()
-    full_csv = os.path.join(FLAGS.csv_dir, '{}_full.csv'.format(config.dataset))
-    train_csv = os.path.join(FLAGS.csv_dir, '{}_train.csv'.format(config.dataset))
-    test_csv = os.path.join(FLAGS.csv_dir, '{}_test.csv'.format(config.dataset))
+    full_csv = os.path.join(FLAGS.csv_dir, '{}_full.csv'.format(FLAGS.dataset))
+    train_csv = os.path.join(FLAGS.csv_dir, '{}_train.csv'.format(FLAGS.dataset))
+    test_csv = os.path.join(FLAGS.csv_dir, '{}_test.csv'.format(FLAGS.dataset))
 
     transform = Transform(FLAGS.review_file, FLAGS.output_dir, FLAGS.meta_file)
     # index_and_filter_review_file
