@@ -74,7 +74,7 @@ class LSE(BaseModel):
 
         # get f(s)
         word_idx_list = tf.stack([word_idxs] + context_word_idxs, 1)
-        f_s, word_vecs = get_query_embedding(self, word_idx_list, self.word_emb, None)
+        f_s, [f_W, word_vecs] = get_query_embedding(self, word_idx_list, self.word_emb, None)
 
         # Negative sampling
         loss, true_w, sample_w = self.LSE_single_nce_loss(f_s, product_idxs, self.product_emb,
@@ -83,7 +83,7 @@ class LSE(BaseModel):
         # L2 regularization
         if self.L2_lambda > 0:
             loss += self.L2_lambda * (tf.nn.l2_loss(true_w) + tf.nn.l2_loss(sample_w) +
-                                      tf.nn.l2_loss(self.f_W) + tf.nn.l2_loss(word_vecs))
+                                      tf.nn.l2_loss(f_W) + tf.nn.l2_loss(word_vecs))
 
         return loss / math_ops.cast(batch_size, dtypes.float32)
 
