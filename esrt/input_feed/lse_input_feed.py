@@ -48,6 +48,14 @@ class LSEInputFeed(BaseInputFeed):
                 review_idxs.append(review_idx)
                 word_idxs.append(text_list[self.cur_word_i])
 
+                i = self.cur_word_i
+                start_index = i - self.model.window_size if i - self.model.window_size > 0 else 0
+                context_word_list = text_list[start_index:i] + text_list[i + 1:i + self.model.window_size + 1]
+                while len(context_word_list) < 2 * self.model.window_size:
+                    context_word_list += text_list[
+                                         start_index:start_index + 2 * self.model.window_size - len(context_word_list)]
+                context_word_idxs.append(context_word_list)
+
             #move to the next
             self.cur_word_i += 1
             self.finished_word_num += 1
@@ -63,6 +71,11 @@ class LSEInputFeed(BaseInputFeed):
                 text_list = self.data_set.review_text[review_idx]
                 text_length = len(text_list)
 
+        length = len(word_idxs)
+        batch_context_word_idxs = []
+        for length_idx in range(2 * self.model.window_size):
+            batch_context_word_idxs.append(np.array([context_word_idxs[batch_idx][length_idx]
+                                                     for batch_idx in range(length)], dtype=np.int64))
         has_next = False if self.cur_review_i == self.review_size else True
 
         # create input feed
@@ -73,7 +86,8 @@ class LSEInputFeed(BaseInputFeed):
         input_feed[self.model.query_word_idxs.name] = query_word_idxs
         input_feed[self.model.review_idxs.name] = review_idxs
         input_feed[self.model.word_idxs.name] = word_idxs
-
+        for i in range(2 * self.model.window_size):
+            input_feed[self.model.context_word_idxs[i].name] = batch_context_word_idxs[i]
         return input_feed, has_next
 
     def prepare_test_epoch(self, debug=False):
