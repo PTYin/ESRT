@@ -4,6 +4,7 @@ import numpy as np
 
 from esrt.engine.base_input_feed import BaseInputFeed
 
+
 class LSEInputFeed(BaseInputFeed):
     def __init__(self, model, batch_size):
         self.model = model
