@@ -286,6 +286,8 @@ class CompatInputFeed():
     def word_idxs(self,batch_input_feed, model) :
         if isinstance(self.input_feed, input_feed.HEMInputFeed):
             return batch_input_feed[model.word_idxs.name]
+        elif isinstance(self.input_feed, input_feed.LSEInputFeed):
+            return batch_input_feed[model.word_idxs.name]
         elif isinstance(self.input_feed, input_feed.AEMInputFeed):
             return batch_input_feed[model.word_idxs.name]
         elif isinstance(self.input_feed, input_feed.DREMInputFeed):
@@ -297,6 +299,8 @@ class CompatInputFeed():
             raise ValueError("The input feed class %s is not defined"%str(self.input_feed))
     def learning_rate(self,batch_input_feed, model):
         if isinstance(self.input_feed, input_feed.HEMInputFeed):
+            return batch_input_feed[model.learning_rate.name]
+        if isinstance(self.input_feed, input_feed.LSEInputFeed):
             return batch_input_feed[model.learning_rate.name]
         if isinstance(self.input_feed, input_feed.AEMInputFeed):
             return batch_input_feed[model.learning_rate.name]
