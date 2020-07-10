@@ -1,4 +1,4 @@
-
+#!/bin/bash
 dataset=("automotive" "cellphones" "clothing" "digital_music" "electronics" "toys")
 models=("lse" "hem" "aem" "zam")
 embedding_size="embed+0"
