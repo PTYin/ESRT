@@ -1,7 +1,7 @@
 arch:
-  input_feed: "esrt.input_feed.HEMInputFeed"
-  learning_algorithm: "esrt.models.HEM"
-  dataset_type: "esrt.dataset.HEMDataset"
+  input_feed: "esrt.input_feed.LSEInputFeed"
+  learning_algorithm: "esrt.models.LSE"
+  dataset_type: "esrt.dataset.LSEDataset"
 data:
   data_dir: "/home/share/yinxiangkun/transformed/toys/seq_min_count5/"
   input_train_dir: "/home/share/yinxiangkun/transformed/toys/seq_min_count5/seq_query_split/"
@@ -10,7 +10,7 @@ data:
 
 experiment:
   subsampling_rate: 0.0001
-  max_train_epoch: 10
+  max_train_epoch: 500
   steps_per_checkpoint: 200
   seconds_per_checkpoint: 3600
   decode: false

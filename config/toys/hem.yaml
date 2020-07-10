@@ -3,14 +3,14 @@ arch:
   learning_algorithm: "esrt.models.HEM"
   dataset_type: "esrt.dataset.HEMDataset"
 data:
-  data_dir: "/home/share/yinxiangkun/transformed/toys/seq_min_count5/" #"../seq_tmp_data/min_count5/"
+  data_dir: "/home/share/yinxiangkun/transformed/toys/seq_min_count5/"
   input_train_dir: "/home/share/yinxiangkun/transformed/toys/seq_min_count5/seq_query_split/"
   model_dir: "/home/share/yinxiangkun/saved/hem_embed+0_toys/"
   logging_dir: "/home/share/yinxiangkun/log/hem_embed+0_toys/"
 
 experiment:
   subsampling_rate: 0.0001
-  max_train_epoch: 10
+  max_train_epoch: 500
   steps_per_checkpoint: 200
   seconds_per_checkpoint: 3600
   decode: false
