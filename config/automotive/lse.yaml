@@ -1,5 +1,5 @@
 arch:
-  input_feed: "esrt.input_feed.HEMInputFeed"
+  input_feed: "esrt.input_feed.LSEInputFeed"
   learning_algorithm: "esrt.models.LSE"
   dataset_type: "esrt.dataset.HEMDataset"
 data:
