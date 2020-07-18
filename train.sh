@@ -4,10 +4,10 @@ models=("lse" "hem" "aem" "zam")
 embedding_size="8"
 
 # create directories
-if [ ! --d config ]; then
+if [ ! -d config ]; then
   mkdir config
   for (( i = 0; i < 6; i++ )); do
-      mkdir ${dataset[i]}
+      mkdir config/${dataset[i]}
   done
 fi
 
@@ -157,10 +157,10 @@ done
 
 #for (( i = 0; i < 6; i++ )); do
 #  for (( j = 0; j < 4; j++ )); do
-#    if [ ! --d "/home/share/yinxiangkun/log/${embedding_size}/${dataset[i]}/${models[j]}/" ]; then
+#    if [ ! -d "/home/share/yinxiangkun/log/${embedding_size}/${dataset[i]}/${models[j]}/" ]; then
 #        mkdir "/home/share/yinxiangkun/log/${embedding_size}/${dataset[i]}/${models[j]}/"
 #    fi
-#    if [ ! --d "/home/share/yinxiangkun/saved/${embedding_size}/${dataset[i]}/" ]; then
+#    if [ ! -d "/home/share/yinxiangkun/saved/${embedding_size}/${dataset[i]}/" ]; then
 #        mkdir "/home/share/yinxiangkun/saved/${embedding_size}/${dataset[i]}/"
 #    fi
 #    python main.py --setting_file "config/${dataset[i]}/${models[j]}.yaml" >> "/home/share/yinxiangkun/log/${embedding_size}/${dataset[i]}/${models[j]}/train_log.txt"
