@@ -20,7 +20,7 @@ bash data_preprocess.sh
 ```
 **Train and Test model**
 ``` 
-~~~~nohup ./auto_train.sh >> nohup.log 2>&1 &~~~~
+nohup ./auto_train.sh >> nohup.log 2>&1 &
 ```
 **Evaluate model**
 ``` 
