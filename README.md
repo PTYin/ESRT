@@ -1,5 +1,3 @@
-TODO
-
 # Overview
 This is a collecetion of implements of following models, but it still under development:
 * [HEM] Qingyao Ai, Yongfeng Zhang, Keping Bi, Xu Chen, W. Bruce Croft. 2017. Learning a Hierarchical Embedding Model for Personalized ProductSearch. In Proceedings of SIGIR ’17
@@ -20,21 +18,9 @@ Please refer to the paper for more details.
 cd experiment/
 bash data_preprocess.sh
 ```
-**Train model**
+**Train and Test model**
 ``` 
-bash hem_run.sh # run hem model
-# or
-bash aem_run.sh # run aem model
-# or
-bash drem_run.sh # run drem model
-```
-**Test model**
-``` 
-bash hem_test.sh # run hem model
-# or
-bash aem_test.sh # run aem model
-# or
-bash drem_test.sh # run drem model
+nohup ./auto_train.sh >> nohup.log 2>&1 &
 ```
 **Evaluate model**
 ``` 

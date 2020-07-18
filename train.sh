@@ -14,8 +14,7 @@ fi
 # generate yaml files
 for (( i = 0; i < 6; i++ )); do
   # LSE
-  echo "
-arch:
+  echo "arch:
   input_feed: \"esrt.input_feed.LSEInputFeed\"
   learning_algorithm: \"esrt.models.LSE\"
   dataset_type: \"esrt.dataset.LSEDataset\"
@@ -47,8 +46,7 @@ hparams:
   batch_size: 384
 " > "config/${dataset[i]}/lse.yaml"
   # HEM
-  echo "
-arch:
+  echo "arch:
   input_feed: \"esrt.input_feed.HEMInputFeed\"
   learning_algorithm: \"esrt.models.HEM\"
   dataset_type: \"esrt.dataset.HEMDataset\"
@@ -80,8 +78,7 @@ hparams:
   batch_size: 384
 " > "config/${dataset[i]}/hem.yaml"
   # AEM
-  echo "
-arch:
+  echo "arch:
   input_feed: \"esrt.input_feed.AEMInputFeed\"
   learning_algorithm: \"esrt.models.AEM\"
   dataset_type: \"esrt.dataset.AEMDataset\"
@@ -117,8 +114,7 @@ hparams:
   batch_size: 384
 " > "config/${dataset[i]}/aem.yaml"
   # ZAM
-  echo "
-arch:
+  echo "arch:
   input_feed: \"esrt.input_feed.ZAMInputFeed\"
   learning_algorithm: \"esrt.models.ZAM\"
   dataset_type: \"esrt.dataset.ZAMDataset\"
@@ -155,18 +151,17 @@ hparams:
 " > "config/${dataset[i]}/zam.yaml"
 done
 
-#for (( i = 0; i < 6; i++ )); do
-#  for (( j = 0; j < 4; j++ )); do
-#    if [ ! -d "/home/share/yinxiangkun/log/${embedding_size}/${dataset[i]}/${models[j]}/" ]; then
-#        mkdir "/home/share/yinxiangkun/log/${embedding_size}/${dataset[i]}/${models[j]}/"
-#    fi
-#    if [ ! -d "/home/share/yinxiangkun/saved/${embedding_size}/${dataset[i]}/" ]; then
-#        mkdir "/home/share/yinxiangkun/saved/${embedding_size}/${dataset[i]}/"
-#    fi
-#    python main.py --setting_file "config/${dataset[i]}/${models[j]}.yaml" >> "/home/share/yinxiangkun/log/${embedding_size}/${dataset[i]}/${models[j]}/train_log.txt"
-#    python main.py --setting_file "config/${dataset[i]}/${models[j]}.yaml" --decode True >> "/home/share/yinxiangkun/log/${embedding_size}/${dataset[i]}/${models[j]}/test_log.txt"
-#    cp "/home/share/yinxiangkun/saved/${models[j]}_${embedding_size}_${dataset[i]}/test.bias_product.ranklist" "/home/share/yinxiangkun/saved/${embedding_size}/${dataset[i]}/${models[j]}.ranklist"
-##    ./galago-3.16-bin/bin/galago eval --judgments= "/home/share/yinxiangkun/transformed/${dataset[i]}/seq_min_count5/seq_query_split/test.qrels" --runs+ "/home/share/yinxiangkun/saved/${embedding_size}/${dataset[i]}/${models[j]}.ranklist"  --metrics+recip_rank --metrics+ndcg10 --metrics+P10 >> ./log.txt
-#  done
-#done
-
+for (( i = 0; i < 6; i++ )); do
+  for (( j = 0; j < 4; j++ )); do
+    if [ ! -d "/home/share/yinxiangkun/log/${embedding_size}/${dataset[i]}/${models[j]}/" ]; then
+        mkdir "/home/share/yinxiangkun/log/${embedding_size}/${dataset[i]}/${models[j]}/"
+    fi
+    if [ ! -d "/home/share/yinxiangkun/saved/${embedding_size}/${dataset[i]}/" ]; then
+        mkdir "/home/share/yinxiangkun/saved/${embedding_size}/${dataset[i]}/"
+    fi
+    python main.py --setting_file "config/${dataset[i]}/${models[j]}.yaml" >> "/home/share/yinxiangkun/log/${embedding_size}/${dataset[i]}/${models[j]}/train_log.txt"
+    python main.py --setting_file "config/${dataset[i]}/${models[j]}.yaml" --decode True >> "/home/share/yinxiangkun/log/${embedding_size}/${dataset[i]}/${models[j]}/test_log.txt"
+    cp "/home/share/yinxiangkun/saved/${models[j]}_${embedding_size}_${dataset[i]}/test.bias_product.ranklist" "/home/share/yinxiangkun/saved/${embedding_size}/${dataset[i]}/${models[j]}.ranklist"
+#    ./galago-3.16-bin/bin/galago eval --judgments= "/home/share/yinxiangkun/transformed/${dataset[i]}/seq_min_count5/seq_query_split/test.qrels" --runs+ "/home/share/yinxiangkun/saved/${embedding_size}/${dataset[i]}/${models[j]}.ranklist"  --metrics+recip_rank --metrics+ndcg10 --metrics+P10 >> ./log.txt
+  done
+done
