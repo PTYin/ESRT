@@ -7,7 +7,7 @@ embedding_size="8"
 if [ ! -d config ]; then
   mkdir config
   for (( i = 0; i < 6; i++ )); do
-      mkdir config/${dataset[i]}
+    mkdir config/${dataset[i]}
   done
 fi
 
@@ -151,13 +151,23 @@ hparams:
 " > "config/${dataset[i]}/zam.yaml"
 done
 
+if [ ! -d "/home/share/yinxiangkun/log/${embedding_size}/" ]; then
+  mkdir "/home/share/yinxiangkun/log/${embedding_size}/"
+fi
+if [ ! -d "/home/share/yinxiangkun/saved/${embedding_size}/" ]; then
+  mkdir "/home/share/yinxiangkun/saved/${embedding_size}/"
+fi
+
 for (( i = 0; i < 6; i++ )); do
+  if [ ! -d "/home/share/yinxiangkun/log/${embedding_size}/${dataset[i]}/" ]; then
+    mkdir "/home/share/yinxiangkun/log/${embedding_size}/${dataset[i]}/"
+  fi
+  if [ ! -d "/home/share/yinxiangkun/saved/${embedding_size}/${dataset[i]}/" ]; then
+    mkdir "/home/share/yinxiangkun/saved/${embedding_size}/${dataset[i]}/"
+  fi
   for (( j = 0; j < 4; j++ )); do
     if [ ! -d "/home/share/yinxiangkun/log/${embedding_size}/${dataset[i]}/${models[j]}/" ]; then
-        mkdir "/home/share/yinxiangkun/log/${embedding_size}/${dataset[i]}/${models[j]}/"
-    fi
-    if [ ! -d "/home/share/yinxiangkun/saved/${embedding_size}/${dataset[i]}/" ]; then
-        mkdir "/home/share/yinxiangkun/saved/${embedding_size}/${dataset[i]}/"
+      mkdir "/home/share/yinxiangkun/log/${embedding_size}/${dataset[i]}/${models[j]}/"
     fi
     python main.py --setting_file "config/${dataset[i]}/${models[j]}.yaml" >> "/home/share/yinxiangkun/log/${embedding_size}/${dataset[i]}/${models[j]}/train_log.txt"
     python main.py --setting_file "config/${dataset[i]}/${models[j]}.yaml" --decode True >> "/home/share/yinxiangkun/log/${embedding_size}/${dataset[i]}/${models[j]}/test_log.txt"
