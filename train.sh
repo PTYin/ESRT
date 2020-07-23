@@ -1,18 +1,18 @@
 #!/bin/bash
-dataset=("automotive" "cellphones" "clothing" "digital_music" "electronics" "toys")
+dataset=("automotive" "cellphones" "clothing" "toys")
 models=("lse" "hem" "aem" "zam")
 embedding_size="8"
 
 # create directories
 if [ ! -d config_${embedding_size} ]; then
   mkdir config_${embedding_size}
-  for (( i = 0; i < 6; i++ )); do
+  for (( i = 0; i < 4; i++ )); do
     mkdir config_${embedding_size}/${dataset[i]}
   done
 fi
 
 # generate yaml files
-for (( i = 0; i < 6; i++ )); do
+for (( i = 0; i < 4; i++ )); do
   # LSE
   echo "arch:
   input_feed: \"esrt.input_feed.LSEInputFeed\"
@@ -158,7 +158,7 @@ if [ ! -d "/home/share/yinxiangkun/saved/${embedding_size}/" ]; then
   mkdir "/home/share/yinxiangkun/saved/${embedding_size}/"
 fi
 
-for (( i = 0; i < 6; i++ )); do
+for (( i = 0; i < 4; i++ )); do
   if [ ! -d "/home/share/yinxiangkun/log/${embedding_size}/${dataset[i]}/" ]; then
     mkdir "/home/share/yinxiangkun/log/${embedding_size}/${dataset[i]}/"
   fi
