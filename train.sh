@@ -4,10 +4,10 @@ models=("lse" "hem" "aem" "zam")
 embedding_size="8"
 
 # create directories
-if [ ! -d config ]; then
-  mkdir config
+if [ ! -d config_${embedding_size} ]; then
+  mkdir config_${embedding_size}
   for (( i = 0; i < 6; i++ )); do
-    mkdir config/${dataset[i]}
+    mkdir config_${embedding_size}/${dataset[i]}
   done
 fi
 
@@ -44,7 +44,7 @@ hparams:
   net_struct: \"LSE\"
   similarity_func: \"bias_product\"
   batch_size: 384
-" > "config/${dataset[i]}/lse.yaml"
+" > "config_${embedding_size}/${dataset[i]}/lse.yaml"
   # HEM
   echo "arch:
   input_feed: \"esrt.input_feed.HEMInputFeed\"
@@ -76,7 +76,7 @@ hparams:
   net_struct: \"simplified_fs\"
   similarity_func: \"bias_product\"
   batch_size: 384
-" > "config/${dataset[i]}/hem.yaml"
+" > "config_${embedding_size}/${dataset[i]}/hem.yaml"
   # AEM
   echo "arch:
   input_feed: \"esrt.input_feed.AEMInputFeed\"
@@ -112,7 +112,7 @@ hparams:
   attention_func: 'default'
   max_history_length: 10
   batch_size: 384
-" > "config/${dataset[i]}/aem.yaml"
+" > "config_${embedding_size}/${dataset[i]}/aem.yaml"
   # ZAM
   echo "arch:
   input_feed: \"esrt.input_feed.ZAMInputFeed\"
@@ -148,7 +148,7 @@ hparams:
   attention_func: 'default'
   max_history_length: 10
   batch_size: 384
-" > "config/${dataset[i]}/zam.yaml"
+" > "config_${embedding_size}/${dataset[i]}/zam.yaml"
 done
 
 if [ ! -d "/home/share/yinxiangkun/log/${embedding_size}/" ]; then
@@ -169,8 +169,8 @@ for (( i = 0; i < 6; i++ )); do
     if [ ! -d "/home/share/yinxiangkun/log/${embedding_size}/${dataset[i]}/${models[j]}/" ]; then
       mkdir "/home/share/yinxiangkun/log/${embedding_size}/${dataset[i]}/${models[j]}/"
     fi
-    python main.py --setting_file "config/${dataset[i]}/${models[j]}.yaml" >> "/home/share/yinxiangkun/log/${embedding_size}/${dataset[i]}/${models[j]}/train_log.txt"
-    python main.py --setting_file "config/${dataset[i]}/${models[j]}.yaml" --decode True >> "/home/share/yinxiangkun/log/${embedding_size}/${dataset[i]}/${models[j]}/test_log.txt"
+    python main.py --setting_file "config_${embedding_size}/${dataset[i]}/${models[j]}.yaml" >> "/home/share/yinxiangkun/log/${embedding_size}/${dataset[i]}/${models[j]}/train_log.txt"
+    python main.py --setting_file "config_${embedding_size}/${dataset[i]}/${models[j]}.yaml" --decode True >> "/home/share/yinxiangkun/log/${embedding_size}/${dataset[i]}/${models[j]}/test_log.txt"
     cp "/home/share/yinxiangkun/saved/${models[j]}_${embedding_size}_${dataset[i]}/test.bias_product.ranklist" "/home/share/yinxiangkun/saved/${embedding_size}/${dataset[i]}/${models[j]}.ranklist"
 #    ./galago-3.16-bin/bin/galago eval --judgments= "/home/share/yinxiangkun/transformed/${dataset[i]}/seq_min_count5/seq_query_split/test.qrels" --runs+ "/home/share/yinxiangkun/saved/${embedding_size}/${dataset[i]}/${models[j]}.ranklist"  --metrics+recip_rank --metrics+ndcg10 --metrics+P10 >> ./log.txt
   done

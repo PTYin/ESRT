@@ -24,11 +24,7 @@ nohup ./auto_train.sh >> nohup.log 2>&1 &
 ```
 **Evaluate model**
 ``` 
-bash hem_metric.sh # run hem model
-# or
-bash aem_metric.sh # run aem model
-# or
-bash drem_metric.sh # run drem model
+./auto_evaluation.sh
 ```
 
 ### Example Parameter Setting
