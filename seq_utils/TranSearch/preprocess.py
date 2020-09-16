@@ -250,7 +250,7 @@ def main():
                         help="define the maximum number of bought products per user, no maximum number if None")
     parser.add_argument("--max_products_per_user",
                         type=int,
-                        default=5,
+                        default=None,
                         help="define the maximum number of users per product, no maximum number if None")
 
     global FLAGS

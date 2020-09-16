@@ -20,3 +20,4 @@ log/
 config*/
 processed/
 saved/
+seq_utils/TranSearch/config.py
