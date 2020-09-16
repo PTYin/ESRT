@@ -30,7 +30,7 @@ tf.app.flags.DEFINE_string("test_mode", "product_scores", "Test modes: product_s
 #tf.app.flags.DEFINE_integer("rank_cutoff", 100,
 #                            "Rank cutoff for output ranklists.")
 
-tf.app.flags.DEFINE_string("setting_file", "./example/exp1.yaml", "a yaml contains all model settings.")
+tf.app.flags.DEFINE_string("setting_file", "config_example/aem.yaml", "a yaml contains all model settings.")
 
 
 FLAGS = tf.app.flags.FLAGS
@@ -119,6 +119,7 @@ def train():
                     print("Epoch %d Words %d/%d: lr = %5.3f loss = %6.2f words/sec = %5.2f prepare_time %.2f step_time %.2f\r" %
                             (current_epoch, input_feed.finished_word_num, input_feed.words_to_train, learning_rate, loss,
                                 (input_feed.finished_word_num- previous_words)/(time.time() - start_time), get_batch_time, step_time), end="")
+                    sys.stdout.flush()
                     step_time, loss = 0.0, 0.0
                     current_step = 1
                     get_batch_time = 0.0
@@ -310,6 +311,7 @@ class CompatInputFeed():
             return batch_input_feed[model.learning_rate.name]
         else:
             raise ValueError("The input feed class %s is not defined"%str(self.input_feed))
+
 
 if __name__ == "__main__":
     print(__file__)

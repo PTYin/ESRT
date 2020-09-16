@@ -18,3 +18,5 @@ galago-3.16-bin/
 .idea/
 log/
 config*/
+processed/
+saved/
