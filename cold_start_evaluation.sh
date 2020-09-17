@@ -1,6 +1,6 @@
 #!/bin/bash
 dataset=("Musical_Instruments")
-models=("lse" "hem" "aem" "zam")
+models=("LSE" "HEM" "AEM" "ZAM")
 embedding_size="embed+0"
 task=$1 # ('ordinary' 'user_1' 'user_3' 'user_5' 'product_1' 'product_3' 'product_5')
 

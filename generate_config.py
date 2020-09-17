@@ -7,8 +7,8 @@ LSE_template = '''arch:
 data:
   data_dir: "/home/share/yinxiangkun/transformed/cold_start/{task}/{dataset}/seq_min_count5/"
   input_train_dir: "/home/share/yinxiangkun/transformed/cold_start/{task}/{dataset}/seq_min_count5/seq_query_split/"
-  model_dir: "/home/share/yinxiangkun/saved/cold_start/{task}/lse_{embedding_size}_{dataset}/"
-  logging_dir: "/home/share/yinxiangkun/log/cold_start/{task}/lse_{embedding_size}_{dataset}/"
+  model_dir: "/home/share/yinxiangkun/saved/cold_start/{task}/LSE_{embedding_size}_{dataset}/"
+  logging_dir: "/home/share/yinxiangkun/log/cold_start/{task}/LSE_{embedding_size}_{dataset}/"
 
 experiment:
   subsampling_rate: 0.0001
@@ -38,8 +38,8 @@ HEM_template = '''arch:
 data:
   data_dir: "/home/share/yinxiangkun/transformed/cold_start/{task}/{dataset}/seq_min_count5/"
   input_train_dir: "/home/share/yinxiangkun/transformed/cold_start/{task}/{dataset}/seq_min_count5/seq_query_split/"
-  model_dir: "/home/share/yinxiangkun/saved/cold_start/{task}/hem_{embedding_size}_{dataset}/"
-  logging_dir: "/home/share/yinxiangkun/log/cold_start/{task}/hem_{embedding_size}_{dataset}/"
+  model_dir: "/home/share/yinxiangkun/saved/cold_start/{task}/HEM_{embedding_size}_{dataset}/"
+  logging_dir: "/home/share/yinxiangkun/log/cold_start/{task}/HEM_{embedding_size}_{dataset}/"
 
 experiment:
   subsampling_rate: 0.0001
@@ -70,8 +70,8 @@ AEM_template = '''arch:
 data:
   data_dir: "/home/share/yinxiangkun/transformed/cold_start/{task}/{dataset}/seq_min_count5/"
   input_train_dir: "/home/share/yinxiangkun/transformed/cold_start/{task}/{dataset}/seq_min_count5/seq_query_split/"
-  model_dir: "/home/share/yinxiangkun/saved/cold_start/{task}/aem_{embedding_size}_{dataset}/"
-  logging_dir: "/home/share/yinxiangkun/log/cold_start/{task}/aem_{embedding_size}_{dataset}/"
+  model_dir: "/home/share/yinxiangkun/saved/cold_start/{task}/AEM_{embedding_size}_{dataset}/"
+  logging_dir: "/home/share/yinxiangkun/log/cold_start/{task}/AEM_{embedding_size}_{dataset}/"
 
 experiment:
   subsampling_rate: 0.0001
@@ -106,8 +106,8 @@ ZAM_template = '''arch:
 data:
   data_dir: "/home/share/yinxiangkun/transformed/cold_start/{task}/{dataset}/seq_min_count5/"
   input_train_dir: "/home/share/yinxiangkun/transformed/cold_start/{task}/{dataset}/seq_min_count5/seq_query_split/"
-  model_dir: "/home/share/yinxiangkun/saved/cold_start/{task}/zam_{embedding_size}_{dataset}/"
-  logging_dir: "/home/share/yinxiangkun/log/cold_start/{task}/zam_{embedding_size}_{dataset}/"
+  model_dir: "/home/share/yinxiangkun/saved/cold_start/{task}/ZAM_{embedding_size}_{dataset}/"
+  logging_dir: "/home/share/yinxiangkun/log/cold_start/{task}/ZAM_{embedding_size}_{dataset}/"
 
 experiment:
   subsampling_rate: 0.0001
