@@ -10,7 +10,6 @@ sys.path.append(os.getcwd())
 import pandas as pd
 import numpy as np
 
-import config
 import text_process
 import image_process
 
@@ -252,6 +251,13 @@ def main():
                         type=int,
                         default=None,
                         help="define the maximum number of users per product, no maximum number if None")
+    parser.add_argument("--")
+
+    parser.add_argument('--dataset', type=str, default='Musical_Instruments')
+    parser.add_argument('--main_path', type=str, default='/home/share/yinxiangkun/data/cold_start/')
+    parser.add_argument('--stop_file', type=str, default='../../seq_utils/TranSearch/stopwords.txt')
+    parser.add_argument('--processed_path', type=str,
+                        default='/home/share/yinxiangkun/processed/cold_start/ordinary/Musical_Instruments/')
 
     global FLAGS
     FLAGS = parser.parse_args()
@@ -260,13 +266,13 @@ def main():
         raise Exception('Too few samples to train! Increase max users or max products.')
 
     ############################################# PREPARE PATHS #############################################
-    if not os.path.exists(config.processed_path):
-        os.makedirs(config.processed_path)
+    if not os.path.exists(FLAGS.processed_path):
+        os.makedirs(FLAGS.processed_path)
 
-    stop_path = config.stop_file
-    meta_path = os.path.join(config.main_path, FLAGS.meta_file)
-    review_path = os.path.join(config.main_path, FLAGS.review_file)
-    img_path = os.path.join(config.main_path, FLAGS.img_feature_file)
+    stop_path = FLAGS.stop_file
+    meta_path = os.path.join(FLAGS.main_path, FLAGS.meta_file)
+    review_path = os.path.join(FLAGS.main_path, FLAGS.review_file)
+    img_path = os.path.join(FLAGS.main_path, FLAGS.img_feature_file)
 
     review_df = get_df(review_path)
     review_df = image_process._rm_image(review_df, img_path)  # remove items without image
@@ -283,7 +289,7 @@ def main():
         df_women, df_men = gender_split(df)
         dataset = [('women_cloth', df_women), ('men_cloth', df_men)]
     else:
-        dataset = [(config.dataset, df)]
+        dataset = [(FLAGS.dataset, df)]
 
     for d in dataset:
         df = reindex(d[1])  # reset the index of users
@@ -294,24 +300,24 @@ def main():
         asin_samples = neg_sample(also_viewed, set(df.asin.unique()))
         print("Negtive samples of {} set done!".format(d[0]))
         json.dump(asin_samples, open(os.path.join(
-            config.processed_path, '{}_asin_sample.json'.format(d[0])), 'w'))
+            FLAGS.processed_path, '{}_asin_sample.json'.format(d[0])), 'w'))
 
         df, df_train, df_test = split_data(df,
                                            max_users_per_product=FLAGS.max_users_per_product,
                                            max_products_per_user=FLAGS.max_products_per_user)
         user_bought = get_user_bought(df_train)
         json.dump(user_bought, open(os.path.join(
-            config.processed_path, '{}_user_bought.json'.format(d[0])), 'w'))
+            FLAGS.processed_path, '{}_user_bought.json'.format(d[0])), 'w'))
 
         df = rm_test(df, df_test)  # remove the reviews from test set
         df_train = rm_test(df_train, df_test)
 
         df.to_csv(os.path.join(
-            config.processed_path, '{}_full.csv'.format(d[0])), index=False)
+            FLAGS.processed_path, '{}_full.csv'.format(d[0])), index=False)
         df_train.to_csv(os.path.join(
-            config.processed_path, '{}_train.csv'.format(d[0])), index=False)
+            FLAGS.processed_path, '{}_train.csv'.format(d[0])), index=False)
         df_test.to_csv(os.path.join(
-            config.processed_path, '{}_test.csv'.format(d[0])), index=False)
+            FLAGS.processed_path, '{}_test.csv'.format(d[0])), index=False)
 
 
 if __name__ == "__main__":

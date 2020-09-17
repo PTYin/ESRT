@@ -29,15 +29,22 @@ parser.add_argument("--img_feature_file",
     type=str,
     default="data/image_features_Musical_Instruments.b",
     help="the raw image feature file")
+
+parser.add_argument('--dataset', type=str, default='Musical_Instruments')
+parser.add_argument('--main_path', type=str, default='/home/share/yinxiangkun/data/cold_start/')
+parser.add_argument('--stop_file', type=str, default='../../seq_utils/TranSearch/stopwords.txt')
+parser.add_argument('--processed_path', type=str,
+                    default='/home/share/yinxiangkun/processed/cold_start/ordinary/Musical_Instruments/')
+
 FLAGS = parser.parse_args()
 
 
 ######################### PREPARE DATA ############################
-full_data = pd.read_csv(config.full_path)
+full_data = pd.read_csv(FLAGS.full_path)
 full_data.query_ = full_data.query_.apply(literal_eval)
 full_data.reviewText = full_data.reviewText.apply(literal_eval)
 asin_set = set(full_data.asin.unique())
-img_path = os.path.join(config.main_path, FLAGS.img_feature_file)
+img_path = os.path.join(FLAGS.main_path, FLAGS.img_feature_file)
 
 # gather reviews to same asins
 raw_doc = collections.defaultdict(list)
@@ -85,10 +92,15 @@ for epoch in range(passes):
     print('epochs:', epoch)
 
 ############################### SAVE TO DISK ################################
-model.save(config.doc2model_path)
 
-json.dump(query_dict, open(config.query_path, 'w'))
+doc2model_path = FLAGS.processed_path + '{}_doc2model'.format(FLAGS.dataset)
+query_path = FLAGS.processed_path + '{}_query.json'.format(FLAGS.dataset)
+img_feature_path = FLAGS.processed_path + '{}_img_feature.npy'.format(FLAGS.dataset)
+
+model.save(doc2model_path)
+
+json.dump(query_dict, open(query_path, 'w'))
 print("The query number is %d." %len(query_dict))
 
 img_feature_dict = image_process._get_feature(asin_set, img_path)
-np.save(config.img_feature_path, img_feature_dict)
+np.save(img_feature_path, img_feature_dict)

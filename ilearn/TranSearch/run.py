@@ -9,44 +9,10 @@ import time
 import numpy as np
 import tensorflow as tf
 
-import config
+from config import Config
 import metrics
 import data_input
 from TranSearch import TranSearch
-
-FLAGS = tf.app.flags.FLAGS
-tf.app.flags.DEFINE_integer('batch_size', 256,
-                            'size of mini-batch.')
-tf.app.flags.DEFINE_integer('negative_num', 5,
-                            'number of negative samples.')
-tf.app.flags.DEFINE_integer('embed_size', 32,
-                            'the size for embedding user and item.')
-tf.app.flags.DEFINE_integer('topK', 20,
-                            'truncated top items.')
-tf.app.flags.DEFINE_integer('epochs', 20,
-                            'the number of epochs.')
-tf.app.flags.DEFINE_string('model_dir', './TranSearch/',
-                           'the dir for saving model.')
-tf.app.flags.DEFINE_string('mode', 'end',
-                           'could be "end", "vis", "text", "double".')
-tf.app.flags.DEFINE_string('optim', 'Adam',
-                           'the optimization method.')
-tf.app.flags.DEFINE_string('activation', 'ELU',
-                           'the activation function.')
-tf.app.flags.DEFINE_string('gpu', '0',
-                           'the gpu card number.')
-tf.app.flags.DEFINE_float('lr', 0.001,
-                          'learning rate.')
-tf.app.flags.DEFINE_float('dropout', 0.5,
-                          'dropout rate.')
-tf.app.flags.DEFINE_float('l2_rate', 0.0001,
-                          'regularize rate.')
-
-opt_gpu = FLAGS.gpu
-os.environ["CUDA_VISIBLE_DEVICES"] = opt_gpu
-tf.logging.set_verbosity(tf.logging.ERROR)
-tf_config = tf.ConfigProto()
-tf_config.gpu_options.allow_growth = True
 
 
 def main(argv=None):
@@ -162,4 +128,47 @@ def test(model, sess, test_data, all_items_idx, user_bought):
 
 
 if __name__ == '__main__':
+    FLAGS = tf.app.flags.FLAGS
+
+    tf.app.flags.DEFINE_string('dataset', 'Musical_Instruments', 'help')
+    tf.app.flags.DEFINE_string('main_path', '/home/share/yinxiangkun/data/cold_start/', 'help')
+    tf.app.flags.DEFINE_string('stop_file', '../../seq_utils/TranSearch/stopwords.txt', 'help')
+    tf.app.flags.DEFINE_string('processed_path',
+                               '/home/share/yinxiangkun/processed/cold_start/ordinary/Musical_Instruments/', 'help')
+
+    tf.app.flags.DEFINE_integer('batch_size', 256,
+                                'size of mini-batch.')
+    tf.app.flags.DEFINE_integer('negative_num', 5,
+                                'number of negative samples.')
+    tf.app.flags.DEFINE_integer('embed_size', 32,
+                                'the size for embedding user and item.')
+    tf.app.flags.DEFINE_integer('topK', 20,
+                                'truncated top items.')
+    tf.app.flags.DEFINE_integer('epochs', 20,
+                                'the number of epochs.')
+    tf.app.flags.DEFINE_string('model_dir', './TranSearch/',
+                               'the dir for saving model.')
+    tf.app.flags.DEFINE_string('mode', 'end',
+                               'could be "end", "vis", "text", "double".')
+    tf.app.flags.DEFINE_string('optim', 'Adam',
+                               'the optimization method.')
+    tf.app.flags.DEFINE_string('activation', 'ELU',
+                               'the activation function.')
+    tf.app.flags.DEFINE_string('gpu', '0',
+                               'the gpu card number.')
+    tf.app.flags.DEFINE_float('lr', 0.001,
+                              'learning rate.')
+    tf.app.flags.DEFINE_float('dropout', 0.5,
+                              'dropout rate.')
+    tf.app.flags.DEFINE_float('l2_rate', 0.0001,
+                              'regularize rate.')
+
+    config = Config(FLAGS.dataset, FLAGS.main_path, FLAGS.stop_file, FLAGS.processed_path)
+    data_input.config = config
+    opt_gpu = FLAGS.gpu
+    os.environ["CUDA_VISIBLE_DEVICES"] = opt_gpu
+    tf.logging.set_verbosity(tf.logging.ERROR)
+    tf_config = tf.ConfigProto()
+    tf_config.gpu_options.allow_growth = True
+
     tf.app.run()
