@@ -4,7 +4,13 @@ models=("lse" "hem" "aem" "zam")
 embedding_size="embed+0"
 task=$1 # ('ordinary' 'user_1' 'user_3' 'user_5' 'product_1' 'product_3' 'product_5')
 
-# Ordinary
+
+if [ ! -d "/home/share/yinxiangkun/log/cold_start/${task}/" ]; then
+  mkdir "/home/share/yinxiangkun/log/cold_start/${task}/"
+fi
+if [ ! -d "/home/share/yinxiangkun/saved/cold_start/${task}/" ]; then
+  mkdir "/home/share/yinxiangkun/saved/cold_start/${task}/"
+fi
 if [ ! -d "/home/share/yinxiangkun/log/cold_start/${task}/${embedding_size}/" ]; then
   mkdir "/home/share/yinxiangkun/log/cold_start/${task}/${embedding_size}/"
 fi
