@@ -295,15 +295,16 @@ def main():
         print("The number of {} users is {:d}; items is {:d}; feedbacks is {:d}.".format(
             d[0], len(df.reviewerID.unique()), len(df.asin.unique()), len(df)))
 
+        df, df_train, df_test = split_data(df,
+                                           max_users_per_product=FLAGS.max_users_per_product,
+                                           max_products_per_user=FLAGS.max_products_per_user)
+
         # sample negative items
         asin_samples = neg_sample(also_viewed, set(df.asin.unique()))
         print("Negtive samples of {} set done!".format(d[0]))
         json.dump(asin_samples, open(os.path.join(
             FLAGS.processed_path, '{}_asin_sample.json'.format(d[0])), 'w'))
 
-        df, df_train, df_test = split_data(df,
-                                           max_users_per_product=FLAGS.max_users_per_product,
-                                           max_products_per_user=FLAGS.max_products_per_user)
         user_bought = get_user_bought(df_train)
         json.dump(user_bought, open(os.path.join(
             FLAGS.processed_path, '{}_user_bought.json'.format(d[0])), 'w'))
