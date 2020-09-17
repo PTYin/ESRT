@@ -40,8 +40,7 @@ FLAGS = parser.parse_args()
 
 
 ######################### PREPARE DATA ############################
-print(FLAGS.processed_path)
-full_path = os.path.join(FLAGS.processed_path + '{}_full.csv'.format(FLAGS.dataset))
+full_path = os.path.join(FLAGS.processed_path, '{}_full.csv'.format(FLAGS.dataset))
 full_data = pd.read_csv(full_path)
 full_data.query_ = full_data.query_.apply(literal_eval)
 full_data.reviewText = full_data.reviewText.apply(literal_eval)
