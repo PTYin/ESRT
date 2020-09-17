@@ -251,7 +251,6 @@ def main():
                         type=int,
                         default=None,
                         help="define the maximum number of users per product, no maximum number if None")
-    parser.add_argument("--")
 
     parser.add_argument('--dataset', type=str, default='Musical_Instruments')
     parser.add_argument('--main_path', type=str, default='/home/share/yinxiangkun/data/cold_start/')

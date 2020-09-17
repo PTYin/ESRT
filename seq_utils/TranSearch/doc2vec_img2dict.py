@@ -40,7 +40,8 @@ FLAGS = parser.parse_args()
 
 
 ######################### PREPARE DATA ############################
-full_data = pd.read_csv(FLAGS.full_path)
+full_path = FLAGS.processed_path + '{}_full.csv'.format(FLAGS.dataset)
+full_data = pd.read_csv(full_path)
 full_data.query_ = full_data.query_.apply(literal_eval)
 full_data.reviewText = full_data.reviewText.apply(literal_eval)
 asin_set = set(full_data.asin.unique())
