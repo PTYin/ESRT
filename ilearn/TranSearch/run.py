@@ -110,7 +110,7 @@ def test(model, sess, test_data, all_items_idx, user_bought):
         ranking_list = all_items_idx[item_indices].tolist()
 
         top_idx = []
-        u_bought = user_bought[reviewerID]
+        u_bought = user_bought[reviewerID] if reviewerID in user_bought else []
         while len(top_idx) < FLAGS.topK:
             candidate_item = ranking_list.pop()
             if candidate_item not in u_bought or candidate_item == itemID:
