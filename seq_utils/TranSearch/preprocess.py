@@ -215,12 +215,6 @@ def gender_split(df):
     return df_women, df_men
 
 
-# def process_cold_start(data_frame: pd.DataFrame, max_products=None, max_users=None):
-#     for row in data_frame:
-#         print(row)
-#     print(data_frame)
-
-
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--review_file',
@@ -292,12 +286,12 @@ def main():
 
     for d in dataset:
         df = reindex(d[1])  # reset the index of users
-        print("The number of {} users is {:d}; items is {:d}; feedbacks is {:d}.".format(
-            d[0], len(df.reviewerID.unique()), len(df.asin.unique()), len(df)))
-
         df, df_train, df_test = split_data(df,
                                            max_users_per_product=FLAGS.max_users_per_product,
                                            max_products_per_user=FLAGS.max_products_per_user)
+
+        print("The number of {} users is {:d}; items is {:d}; feedbacks is {:d}.".format(
+            d[0], len(df.reviewerID.unique()), len(df.asin.unique()), len(df)))
 
         # sample negative items
         asin_samples = neg_sample(also_viewed, set(df.asin.unique()))

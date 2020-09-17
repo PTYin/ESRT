@@ -144,7 +144,7 @@ if __name__ == '__main__':
                                 'the size for embedding user and item.')
     tf.app.flags.DEFINE_integer('topK', 20,
                                 'truncated top items.')
-    tf.app.flags.DEFINE_integer('epochs', 20,
+    tf.app.flags.DEFINE_integer('epochs', 50,
                                 'the number of epochs.')
     tf.app.flags.DEFINE_string('model_dir', './TranSearch/',
                                'the dir for saving model.')
@@ -166,7 +166,7 @@ if __name__ == '__main__':
     config = Config(FLAGS.dataset, FLAGS.main_path, FLAGS.stop_file, FLAGS.processed_path)
     data_input.config = config
     opt_gpu = FLAGS.gpu
-    os.environ["CUDA_VISIBLE_DEVICES"] = opt_gpu
+    # os.environ["CUDA_VISIBLE_DEVICES"] = opt_gpu
     tf.logging.set_verbosity(tf.logging.ERROR)
     tf_config = tf.ConfigProto()
     tf_config.gpu_options.allow_growth = True
