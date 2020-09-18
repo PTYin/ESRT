@@ -133,9 +133,10 @@ class AEM(BaseModel):
         opt = tf.train.AdamOptimizer(self.learning_rate)
         self.gradients = tf.gradients(self.loss, params)
 
-        # self.clipped_gradients, self.norm = tf.clip_by_global_norm(self.gradients,
-        #                                                          self.max_gradient_norm)
-        return opt.apply_gradients(zip(self.gradients, params))
+        self.clipped_gradients, self.norm = tf.clip_by_global_norm(self.gradients,
+                                                                 self.max_gradient_norm)
+        return opt.apply_gradients(zip(self.clipped_gradients, params),
+                                         global_step=self.global_step)
 
     def step(self, session, input_feed, forward_only, file_writer=None, test_mode='product_scores'):
         if not forward_only:
