@@ -39,7 +39,7 @@ class AEM(BaseModel):
         self.similarity_func = self._params['similarity_func']
         self.query_weight=self._params['query_weight']
         self.max_history_length = min(self._params['max_history_length'], self._dataset.max_history_length)
-        self.global_step = tf.Variable(0, trainable=False)
+        # self.global_step = tf.Variable(0, trainable=False)
         if self.query_weight >= 0:
             self.Wu = tf.Variable(self.query_weight, name="user_weight", dtype=tf.float32, trainable=False)
         else:
@@ -133,8 +133,7 @@ class AEM(BaseModel):
         opt = tf.train.AdamOptimizer(self.learning_rate)
         self.gradients = tf.gradients(self.loss, params)
 
-        return opt.apply_gradients(zip(self.gradients, params),
-                                         global_step=self.global_step)
+        return opt.apply_gradients(zip(self.gradients, params))
 
     def step(self, session, input_feed, forward_only, file_writer=None, test_mode='product_scores'):
         if not forward_only:
