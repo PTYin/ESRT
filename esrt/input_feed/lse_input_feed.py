@@ -30,8 +30,9 @@ class LSEInputFeed(BaseInputFeed):
     def get_train_batch(self,debug=False):
         user_idxs, product_idxs, review_idxs, word_idxs, context_word_idxs = [],[],[],[],[]
         query_word_idxs = []
-        learning_rate = self.model.init_learning_rate * max(0.0001,
-                                    1.0 - self.finished_word_num / self.words_to_train)
+        # learning_rate = self.model.init_learning_rate * max(0.0001,
+        #                             1.0 - self.finished_word_num / self.words_to_train)
+        learning_rate = self.model.init_learning_rate
         review_idx = self.train_seq[self.cur_review_i]
         user_idx = self.data_set.review_info[review_idx][0]
         product_idx = self.data_set.review_info[review_idx][1]

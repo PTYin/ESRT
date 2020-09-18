@@ -134,8 +134,7 @@ class DREMInputFeed(BaseInputFeed):
             'categories' : []
         }
         query_word_idxs = []
-        learning_rate = self.model.init_learning_rate * max(0.0001,
-                                    1.0 - self.finished_word_num / self.words_to_train)
+        learning_rate = self.model.init_learning_rate
         start_i = self.cur_uqr_i
         user_idx, product_idx, query_idx, review_idx = self.test_seq[self.cur_uqr_i]
 
