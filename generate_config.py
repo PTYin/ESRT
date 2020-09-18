@@ -12,7 +12,7 @@ data:
 
 experiment:
   subsampling_rate: 0.0001
-  max_train_epoch: 500
+  max_train_epoch: 100
   steps_per_checkpoint: 200
   seconds_per_checkpoint: 3600
   decode: false

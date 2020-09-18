@@ -144,7 +144,7 @@ if __name__ == '__main__':
                                 'the size for embedding user and item.')
     tf.app.flags.DEFINE_integer('topK', 20,
                                 'truncated top items.')
-    tf.app.flags.DEFINE_integer('epochs', 50,
+    tf.app.flags.DEFINE_integer('epochs', 100,
                                 'the number of epochs.')
     tf.app.flags.DEFINE_string('model_dir', './TranSearch/',
                                'the dir for saving model.')
