@@ -23,7 +23,7 @@ hparams:
   window_size: 5
   embed_size: 100
   max_gradient_norm: 5.0
-  init_learning_rate: 0.5
+  init_learning_rate: 0.001
   L2_lambda: 0.005
   query_weight: 0.5
   negative_sample: 5
@@ -43,7 +43,7 @@ data:
 
 experiment:
   subsampling_rate: 0.0001
-  max_train_epoch: 500
+  max_train_epoch: 100
   steps_per_checkpoint: 200
   seconds_per_checkpoint: 3600
   decode: false
@@ -54,7 +54,7 @@ hparams:
   window_size: 5
   embed_size: 100
   max_gradient_norm: 5.0
-  init_learning_rate: 0.5
+  init_learning_rate: 0.001
   L2_lambda: 0.005
   query_weight: 0.5
   negative_sample: 5
@@ -75,7 +75,7 @@ data:
 
 experiment:
   subsampling_rate: 0.0001
-  max_train_epoch: 500
+  max_train_epoch: 100
   steps_per_checkpoint: 200
   seconds_per_checkpoint: 3600
   decode: false
@@ -86,7 +86,7 @@ hparams:
   window_size: 5
   embed_size: 300
   max_gradient_norm: 5.0
-  init_learning_rate: 0.5
+  init_learning_rate: 0.001
   L2_lambda: 0.005
   query_weight: 0.5
   negative_sample: 5
@@ -111,7 +111,7 @@ data:
 
 experiment:
   subsampling_rate: 0.0001
-  max_train_epoch: 500
+  max_train_epoch: 100
   steps_per_checkpoint: 200
   seconds_per_checkpoint: 3600
   decode: false
@@ -122,7 +122,7 @@ hparams:
   window_size: 5
   embed_size: 300
   max_gradient_norm: 5.0
-  init_learning_rate: 0.5
+  init_learning_rate: 0.001
   L2_lambda: 0.005
   query_weight: 0.5
   negative_sample: 5
