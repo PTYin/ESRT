@@ -111,7 +111,7 @@ class HEM(BaseModel):
 
     def _build_optimizer(self):
         params = tf.trainable_variables()
-        opt = tf.train.GradientDescentOptimizer(self.learning_rate)
+        opt = tf.train.AdamOptimizer(self.learning_rate)
         self.gradients = tf.gradients(self.loss, params)
 
         self.clipped_gradients, self.norm = tf.clip_by_global_norm(self.gradients,

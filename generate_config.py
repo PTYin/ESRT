@@ -12,7 +12,7 @@ data:
 
 experiment:
   subsampling_rate: 0.0001
-  max_train_epoch: 50
+  max_train_epoch: 500
   steps_per_checkpoint: 200
   seconds_per_checkpoint: 3600
   decode: false
@@ -29,7 +29,7 @@ hparams:
   negative_sample: 5
   net_struct: "LSE"
   similarity_func: "bias_product"
-  batch_size: 384'''
+  batch_size: 256'''
 
 HEM_template = '''arch:
   input_feed: "esrt.input_feed.HEMInputFeed"
@@ -43,7 +43,7 @@ data:
 
 experiment:
   subsampling_rate: 0.0001
-  max_train_epoch: 50
+  max_train_epoch: 500
   steps_per_checkpoint: 200
   seconds_per_checkpoint: 3600
   decode: false
@@ -60,7 +60,7 @@ hparams:
   negative_sample: 5
   net_struct: "simplified_fs"
   similarity_func: "bias_product"
-  batch_size: 384
+  batch_size: 256
 '''
 
 AEM_template = '''arch:
@@ -75,7 +75,7 @@ data:
 
 experiment:
   subsampling_rate: 0.0001
-  max_train_epoch: 50
+  max_train_epoch: 500
   steps_per_checkpoint: 200
   seconds_per_checkpoint: 3600
   decode: false
@@ -96,7 +96,7 @@ hparams:
   num_heads: 5
   attention_func: 'default'
   max_history_length: 10
-  batch_size: 384
+  batch_size: 256
 '''
 
 ZAM_template = '''arch:
@@ -111,7 +111,7 @@ data:
 
 experiment:
   subsampling_rate: 0.0001
-  max_train_epoch: 50
+  max_train_epoch: 500
   steps_per_checkpoint: 200
   seconds_per_checkpoint: 3600
   decode: false
@@ -132,7 +132,7 @@ hparams:
   num_heads: 5
   attention_func: 'default'
   max_history_length: 10
-  batch_size: 384
+  batch_size: 256
 '''
 
 
