@@ -37,8 +37,9 @@ class DREMInputFeed(BaseInputFeed):
             'categories' : []
         }
         query_word_idxs = []
-        learning_rate = self.model.init_learning_rate * max(0.0001,
-                                    1.0 - self.finished_word_num / self.words_to_train)
+        # learning_rate = self.model.init_learning_rate * max(0.0001,
+        #                             1.0 - self.finished_word_num / self.words_to_train)
+        learning_rate = self.model.init_learning_rate
         review_idx, user_idx, product_idx, query_idx = None, None, None, None
         text_list, text_length, product_knowledge = None, None, None
 

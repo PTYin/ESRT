@@ -30,8 +30,9 @@ class AEMInputFeed(BaseInputFeed):
         query_word_idxs = []
         history_product_idxs = []
         input_history_length = []
-        learning_rate = self.model.init_learning_rate * max(0.0001,
-                                    1.0 - self.finished_word_num / self.words_to_train)
+        # learning_rate = self.model.init_learning_rate * max(0.0001,
+        #                             1.0 - self.finished_word_num / self.words_to_train)
+        learning_rate = self.model.init_learning_rate
         review_idx = self.train_seq[self.cur_review_i]
         user_idx = self.data_set.review_info[review_idx][0]
         product_idx = self.data_set.review_info[review_idx][1]
