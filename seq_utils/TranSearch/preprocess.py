@@ -233,10 +233,10 @@ def main():
                         action='store_true',
                         default=False,
                         help="Clothing dataset needs to be split")
-    parser.add_argument("--img_feature_file",
-                        type=str,
-                        default="data/image_features_Musical_Instruments.b",
-                        help="the raw image feature file")
+    # parser.add_argument("--img_feature_file",
+    #                     type=str,
+    #                     default="data/image_features_Musical_Instruments.b",
+    #                     help="the raw image feature file")
     parser.add_argument("--max_users_per_product",
                         type=int,
                         default=None,
@@ -265,10 +265,10 @@ def main():
     stop_path = FLAGS.stop_file
     meta_path = os.path.join(FLAGS.main_path, FLAGS.meta_file)
     review_path = os.path.join(FLAGS.main_path, FLAGS.review_file)
-    img_path = os.path.join(FLAGS.main_path, FLAGS.img_feature_file)
+    # img_path = os.path.join(FLAGS.main_path, FLAGS.img_feature_file)
 
     review_df = get_df(review_path)
-    review_df = image_process._rm_image(review_df, img_path)  # remove items without image
+    # review_df = image_process._rm_image(review_df, img_path)  # remove items without image
 
     stop_df = pd.read_csv(stop_path, header=None, names=['stopword'])
     stop_words = set(stop_df['stopword'].unique())
