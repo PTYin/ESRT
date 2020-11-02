@@ -78,11 +78,11 @@ alpha_delta = (alpha_val - min_alpha_val) / (passes - 1)
 model = doc2vec.Doc2Vec(
     min_count=2,
     workers=4,
-    epochs=10,
+    epochs=40,
     vector_size=FLAGS.embedding_size,
     window=FLAGS.window_size)
 
-model.build_vocab(docs) # Building vocabulary
+model.build_vocab(docs)  # Building vocabulary
 for epoch in range(passes):
     random.shuffle(docs)
 

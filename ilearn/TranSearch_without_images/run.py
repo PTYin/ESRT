@@ -36,7 +36,7 @@ def main(argv=None):
     train_iter = train_dataset.make_initializable_iterator()
 
     all_items_idx = []
-    for _, _, item in train_data.get_all_test():
+    for _, item in train_data.get_all_test():
         all_items_idx.append(item)
 
     user_size = len(train_data.data.userID.unique())
@@ -116,7 +116,7 @@ def test(model, sess, test_data, all_items_idx, user_bought):
 
         top_idx = []
         u_bought = user_bought[reviewerID] if reviewerID in user_bought else []
-        while len(top_idx) < FLAGS.topK:
+        while len(top_idx) < FLAGS.topK:  # delete those items already bought by the user
             candidate_item = ranking_list.pop()
             if candidate_item not in u_bought or candidate_item == itemID:
                 top_idx.append(candidate_item)
@@ -149,7 +149,7 @@ if __name__ == '__main__':
                                 'the size for embedding user and item.')
     tf.app.flags.DEFINE_integer('topK', 20,
                                 'truncated top items.')
-    tf.app.flags.DEFINE_integer('epochs', 100,
+    tf.app.flags.DEFINE_integer('epochs', 10,
                                 'the number of epochs.')
     tf.app.flags.DEFINE_string('model_dir', './TranSearch/',
                                'the dir for saving model.')
@@ -169,6 +169,7 @@ if __name__ == '__main__':
                               'regularize rate.')
 
     config = Config(FLAGS.dataset, FLAGS.main_path, FLAGS.stop_file, FLAGS.processed_path)
+    data_input.config = config
     opt_gpu = FLAGS.gpu
     # os.environ["CUDA_VISIBLE_DEVICES"] = opt_gpu
     tf.logging.set_verbosity(tf.logging.ERROR)

@@ -8,7 +8,7 @@ import pandas as pd
 import numpy as np
 
 import config
-import text_process
+from seq_utils.cold_start import text_process
 
 
 def get_df(path):
@@ -46,8 +46,8 @@ def extraction(meta_path, review_df, stop_words, count):
         category = categories[asin]
 
         # process queries
-        qs = map(text_process._remove_dup, 
-                    map(text_process._remove_char, category))
+        qs = map(text_process._remove_dup,
+                 map(text_process._remove_char, category))
         qs = [[w for w in q if w not in stop_words] for q in qs]
 
         # return the query with max length

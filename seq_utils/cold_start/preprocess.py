@@ -1,15 +1,14 @@
-import os, sys
+import os
 import gzip
 import json
 import argparse
 import itertools
-
-sys.path.append(os.getcwd())
+import random
 
 import pandas as pd
 import numpy as np
 
-from seq_utils.cold_start import text_process
+import text_process
 
 
 def get_df(path):
@@ -18,7 +17,7 @@ def get_df(path):
     df = {}
     g = gzip.open(path, 'rb')
     for line in g:
-        df[idx] = eval(line)
+        df[idx] = json.loads(line)
         idx += 1
     return pd.DataFrame.from_dict(df, orient='index')
 
@@ -85,25 +84,38 @@ def split_data(df, max_users_per_product, max_products_per_user):
             df_enlarge[i] = {'reviewerID': df['reviewerID'][row],
                              'userID': df['userID'][row], 'query_': q,
                              'asin': df['asin'][row], 'reviewText': df['reviewText'][row],
-                             'gender': df['gender'][row] if FLAGS.is_clothing else None}
+                             'gender': None}
             i += 1
     df_enlarge = pd.DataFrame.from_dict(df_enlarge, orient='index')
 
     split_filter = []
     df_enlarge = df_enlarge.sort_values(by='userID')
-    user_length = df_enlarge.groupby('userID').size().tolist()
+    df_enlarge['filter'] = None
+    df_enlarge['metaFilter'] = None
+    users = df_enlarge.groupby('userID')
+    user_length = users.size().tolist()
+    users = list(df_enlarge.groupby('userID'))
+    random.shuffle(users)
 
-    for user in range(len(user_length)):
-        length = user_length[user]
-        tag = ['Train' for _ in range(int(length * 0.8))]
-        tag_test = ['Test' for _ in range(length - int(length * 0.8))]
-        tag.extend(tag_test)
-        if length == 1:
-            tag = ['Train']
-        tag = np.random.choice(tag, length, replace=False)
-        split_filter.extend(tag.tolist())
+    # Meta Learning Train Set
+    for index in range(int(len(user_length) * 0.7)):
+        user = users[index][1]
+        length = len(user)
+        df_enlarge.loc[user.index, 'filter'] = ['Train'] * length
+        meta_tag = ['TrainSupport'] * int(length * 0.6) + ['TrainQuery'] * (length - int(length * 0.6))
+        random.shuffle(meta_tag)
+        df_enlarge.loc[user.index, 'metaFilter'] = meta_tag
 
-    df_enlarge['filter'] = split_filter
+    # Meta Learning Test Set
+    for index in range(int(len(user_length) * 0.7), len(user_length)):
+        user = users[index][1]
+        length = len(user)
+
+        test_pos = random.randint(0, length-1)
+        df_enlarge.loc[user.index, 'filter'] = ['Train'] * test_pos + ['Test'] + ['Train'] * (length - test_pos - 1)
+        df_enlarge.loc[user.index, 'metaFilter'] = \
+            ['TestSupport'] * test_pos + ['TestQuery'] + ['TestSupport'] * (length - test_pos - 1)
+
     # ----------------Cut for Cold Start----------------
     if max_products_per_user is not None:  # cold start for new user
         users = df_enlarge.groupby('userID')
@@ -164,7 +176,7 @@ def rm_test(df, df_test):
 def neg_sample(also_viewed, unique_asin):
     """
     Sample the negative set for each asin(item), first add the 'also_view'
-    asins to the dict, then add asins share the same query. 
+    asins to the dict, then add asins share the same query.
     """
     asin_samples = {}
     for asin in unique_asin:
@@ -196,45 +208,28 @@ def neg_sample(also_viewed, unique_asin):
     return asin_samples
 
 
-def gender_split(df):
-    """ Only useful when do experiments on clothing dataset. """
-    gender = []
-    for i in range(len(df)):
-        q = list(itertools.chain.from_iterable(df['query_'][i]))
-        if 'women' in q:
-            gender.append('women')
-        elif 'men' in q:
-            gender.append('men')
-        else:
-            gender.append('other')
-    df['gender'] = gender
-    df_women = df[df['gender'] == 'women'].reset_index(drop=True)
-    df_men = df[df['gender'] == 'men'].reset_index(drop=True)
-    return df_women, df_men
+def filter_review(review_df):
+    users = review_df.groupby('reviewerID')
+    for interactions in users:
+        interactions = interactions[1]
+        if len(interactions) < 2:
+            review_df.drop(interactions.index, inplace=True)
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--review_file',
                         type=str,
-                        default='data/reviews_Musical_Instruments_5.json.gz',
+                        default='reviews_Musical_Instruments_5.json.gz',
                         help="5-core review file")
     parser.add_argument('--meta_file',
                         type=str,
-                        default='data/meta_Musical_Instruments.json.gz',
+                        default='meta_Musical_Instruments.json.gz',
                         help="meta data file for the corresponding review file")
     parser.add_argument('--count',
                         type=int,
                         default=5,
                         help="remove the words number less than count")
-    parser.add_argument('--is_clothing',
-                        action='store_true',
-                        default=False,
-                        help="Clothing dataset needs to be split")
-    # parser.add_argument("--img_feature_file",
-    #                     type=str,
-    #                     default="data/image_features_Musical_Instruments.b",
-    #                     help="the raw image feature file")
     parser.add_argument("--max_users_per_product",
                         type=int,
                         default=None,
@@ -256,31 +251,28 @@ def main():
             (FLAGS.max_products_per_user is not None and FLAGS.max_products_per_user < 1):
         raise Exception('Too few samples to train! Increase max users or max products.')
 
-    ############################################# PREPARE PATHS #############################################
+    # --------------PREPARE PATHS--------------
     if not os.path.exists(FLAGS.processed_path):
         os.makedirs(FLAGS.processed_path)
 
     stop_path = FLAGS.stop_file
     meta_path = os.path.join(FLAGS.main_path, FLAGS.meta_file)
     review_path = os.path.join(FLAGS.main_path, FLAGS.review_file)
-    # img_path = os.path.join(FLAGS.main_path, FLAGS.img_feature_file)
 
     review_df = get_df(review_path)
-    # review_df = image_process._rm_image(review_df, img_path)  # remove items without image
+    # --------------Filter Review--------------
+    # at least 2 interactions
+    filter_review(review_df)
 
     stop_df = pd.read_csv(stop_path, header=None, names=['stopword'])
     stop_words = set(stop_df['stopword'].unique())
 
-    ############################################# PRE-EXTRACTION #############################################
+    # --------------PRE-EXTRACTION--------------
     df, also_viewed = extraction(meta_path, review_df, stop_words, FLAGS.count)
     df = df.drop(['reviewerName', 'reviewTime', 'helpful', 'summary',
                   'unixReviewTime', 'overall'], axis=1)  # remove non-useful keys
 
-    if FLAGS.is_clothing:
-        df_women, df_men = gender_split(df)
-        dataset = [('women_cloth', df_women), ('men_cloth', df_men)]
-    else:
-        dataset = [(FLAGS.dataset, df)]
+    dataset = [(FLAGS.dataset, df)]
 
     for d in dataset:
         df = reindex(d[1])  # reset the index of users

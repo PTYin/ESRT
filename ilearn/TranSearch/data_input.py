@@ -10,7 +10,6 @@ import pandas as pd
 import tensorflow as tf 
 from gensim.models.doc2vec import Doc2Vec
 
-from config import Config
 
 config = None
 

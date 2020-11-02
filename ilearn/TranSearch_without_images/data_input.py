@@ -10,11 +10,9 @@ import pandas as pd
 import tensorflow as tf 
 from gensim.models.doc2vec import Doc2Vec
 
-from run import config
+# from run import config
 
-
-# def construct_config(dataset, main_path, stop_file, processed_path):
-# 	config = Config(dataset, main_path, stop_file, processed_path)
+config = None
 
 
 class PretrainData(object):
