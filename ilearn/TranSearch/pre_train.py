@@ -202,9 +202,9 @@ def main(argv=None):
 		train_next = train_iter.get_next()
 
 	############################## CREATE MODEL #############################
-		model = PreTrain(text_size=512, visual_size=4096, 
-						embed_size=FLAGS.embedding_size, 
-						lr=FLAGS.lr, dropout=FLAGS.dropout,is_training=True)		
+		model = PreTrain(text_size=512, visual_size=4096,
+                         embed_size=FLAGS.word_embedding_size,
+                         lr=FLAGS.lr, dropout=FLAGS.dropout, is_training=True)
 		model.get_data(train_next)
 		model.build()
 

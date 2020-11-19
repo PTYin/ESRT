@@ -40,6 +40,7 @@ def extraction(meta_path, review_df, stop_words, count):
                 also_viewed[asin] = itertools.chain.from_iterable(also_viewed[asin])
 
     queries, reviews = [], []
+    word_dict = {}  # start from 1
     for i in range(len(review_df)):
         asin = review_df['asin'][i]
         review = review_df['reviewText'][i]
@@ -50,9 +51,18 @@ def extraction(meta_path, review_df, stop_words, count):
                  map(text_process._remove_char, category))
         qs = [[w for w in q if w not in stop_words] for q in qs]
 
+        for q in qs:
+            for w in q:
+                if w not in word_dict:
+                    word_dict[w] = len(word_dict)+1
+
         # process reviews
         review = text_process._remove_char(review)
         review = [w for w in review if w not in stop_words]
+
+        for w in review:
+            if w not in word_dict:
+                word_dict[w] = len(word_dict)+1
 
         queries.append(qs)
         reviews.append(review)
@@ -62,7 +72,11 @@ def extraction(meta_path, review_df, stop_words, count):
     # filtering words counts less than count
     reviews = text_process._filter_words(reviews, count)
     review_df['reviewText'] = reviews
-    return review_df, also_viewed
+
+    review_df['reviewWords'] = [[word_dict[w] for w in review] for review in reviews]
+    review_df['queryWords'] = [[[word_dict[w] for w in q] for q in qs] for qs in queries]
+
+    return review_df, also_viewed, word_dict
 
 
 def reindex(df):
@@ -80,10 +94,12 @@ def split_data(df, max_users_per_product, max_products_per_user):
     df_enlarge = {}
     i = 0
     for row in range(len(df)):
-        for q in df['query_'][row]:
+        for j in range(len(df['query_'][row])):
             df_enlarge[i] = {'reviewerID': df['reviewerID'][row],
-                             'userID': df['userID'][row], 'query_': q,
+                             'userID': df['userID'][row], 'query_': df['query_'][row][j],
+                             'queryWords': df['queryWords'][row][j],
                              'asin': df['asin'][row], 'reviewText': df['reviewText'][row],
+                             'reviewWords': df['reviewWords'][row],
                              'gender': None}
             i += 1
     df_enlarge = pd.DataFrame.from_dict(df_enlarge, orient='index')
@@ -95,6 +111,7 @@ def split_data(df, max_users_per_product, max_products_per_user):
     users = df_enlarge.groupby('userID')
     user_length = users.size().tolist()
     users = list(df_enlarge.groupby('userID'))
+
     random.shuffle(users)
 
     # Meta Learning Train Set
@@ -115,6 +132,13 @@ def split_data(df, max_users_per_product, max_products_per_user):
         df_enlarge.loc[user.index, 'filter'] = ['Train'] * test_pos + ['Test'] + ['Train'] * (length - test_pos - 1)
         df_enlarge.loc[user.index, 'metaFilter'] = \
             ['TestSupport'] * test_pos + ['TestQuery'] + ['TestSupport'] * (length - test_pos - 1)
+
+    # for asin in df_enlarge.groupby(by='asin'):
+    #     asin = asin[1]
+    #     train_length = len(asin[asin['metaFilter'].startswith('Train')])
+    #     train_query = asin[asin['metaFilter'] == 'TrainQuery']
+    #     if len(train_query) == train_length:
+    #         for user in train_query['userID']:
 
     # ----------------Cut for Cold Start----------------
     if max_products_per_user is not None:  # cold start for new user
@@ -209,11 +233,13 @@ def neg_sample(also_viewed, unique_asin):
 
 
 def filter_review(review_df):
+    review_df = review_df.drop(index=review_df[review_df.reviewText.map(len) == 0].index)
     users = review_df.groupby('reviewerID')
     for interactions in users:
         interactions = interactions[1]
         if len(interactions) < 2:
-            review_df.drop(interactions.index, inplace=True)
+            review_df.drop(interactions.index)
+    return review_df.reset_index(drop=True)
 
 
 def main():
@@ -260,17 +286,16 @@ def main():
     review_path = os.path.join(FLAGS.main_path, FLAGS.review_file)
 
     review_df = get_df(review_path)
-    # --------------Filter Review--------------
-    # at least 2 interactions
-    filter_review(review_df)
-
-    stop_df = pd.read_csv(stop_path, header=None, names=['stopword'])
-    stop_words = set(stop_df['stopword'].unique())
 
     # --------------PRE-EXTRACTION--------------
-    df, also_viewed = extraction(meta_path, review_df, stop_words, FLAGS.count)
+    stop_df = pd.read_csv(stop_path, header=None, names=['stopword'])
+    stop_words = set(stop_df['stopword'].unique())
+    df, also_viewed, word_dict = extraction(meta_path, review_df, stop_words, FLAGS.count)
     df = df.drop(['reviewerName', 'reviewTime', 'helpful', 'summary',
                   'unixReviewTime', 'overall'], axis=1)  # remove non-useful keys
+
+    # at least 2 interactions & filter blank review
+    df = filter_review(df)
 
     dataset = [(FLAGS.dataset, df)]
 
@@ -286,12 +311,17 @@ def main():
         # sample negative items
         asin_samples = neg_sample(also_viewed, set(df.asin.unique()))
         print("Negtive samples of {} set done!".format(d[0]))
+
+        # ---------------------------------Save Parameters---------------------------------
         json.dump(asin_samples, open(os.path.join(
             FLAGS.processed_path, '{}_asin_sample.json'.format(d[0])), 'w'))
 
         user_bought = get_user_bought(df_train)
         json.dump(user_bought, open(os.path.join(
             FLAGS.processed_path, '{}_user_bought.json'.format(d[0])), 'w'))
+
+        json.dump(word_dict, open(os.path.join(
+            FLAGS.processed_path, '{}_word_dict.json'.format(d[0])), 'w'))
 
         df = rm_test(df, df_test)  # remove the reviews from test set
         df_train = rm_test(df_train, df_test)
