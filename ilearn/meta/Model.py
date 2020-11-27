@@ -10,6 +10,7 @@ class AttentionLayer(nn.Module):
         self.hidden_dim = hidden_dim
         self.query_projection = nn.Linear(input_dim, input_dim * hidden_dim)
         self.reduce_projection = nn.Linear(hidden_dim, 1, bias=False)
+        self.eps = torch.tensor(1e-6, requires_grad=False)
 
     def reset_parameters(self):
         nn.init.xavier_normal_(self.query_projection.weight)
@@ -26,16 +27,24 @@ class AttentionLayer(nn.Module):
         # ------------tanh(W*q+b)------------
         projected_query = torch.tanh(self.query_projection(query_embedding))
         # shape: (1, input_dim * hidden_dim) or (input_dim * hidden_dim)
-        projected_query = projected_query.reshape((self.input_dim, self.hidden_dim))
+        projected_query = projected_query.view((self.input_dim, self.hidden_dim))
         # shape: (input_dim, hidden_dim)
         # ------------r*tanh(W*q+b)------------
         reviews_query_dotted_sum = reviews_embedding @ projected_query
         # shape: (batch, hidden_dim)
-        # ------------exp((r*tanh(W_1*q+b))*W_2)------------
-        reviews_query_reduce_sum = torch.squeeze(torch.exp(self.reduce_projection(reviews_query_dotted_sum)), dim=1)
-        # shape: (batch,)
-        denominator = torch.sum(reviews_query_reduce_sum, dim=0)
-        weight = torch.unsqueeze(reviews_query_reduce_sum / denominator, dim=1)
+        # ------------(r*tanh(W_1*q+b))*W_2------------
+        reviews_query_reduce_sum = self.reduce_projection(reviews_query_dotted_sum)
+        # shape: (batch, 1)
+        weight = torch.softmax(reviews_query_reduce_sum, dim=0)
+
+        # # ------------exp((r*tanh(W_1*q+b))*W_2)------------
+        # reviews_query_reduce_sum = torch.squeeze(torch.exp(self.reduce_projection(reviews_query_dotted_sum)), dim=1)
+        # # shape: (batch,)
+        # denominator = torch.sum(reviews_query_reduce_sum, dim=0)
+        # denominator = torch.clamp(denominator, min=1e-4)
+        # print("denominator:", denominator)
+        # weight = torch.unsqueeze(reviews_query_reduce_sum / denominator, dim=1)
+        # print("weight:", weight)
         # shape: (batch, 1)
         entity_embedding = torch.sum(weight * reviews_embedding, dim=0)
         # shape: (input_dim)
@@ -85,20 +94,25 @@ class Model(nn.Module):
     def embedding(self, words, lengths):
         word_embedding = pack_padded_sequence(self.word_embedding_layer(words), lengths,
                                               batch_first=True, enforce_sorted=False)
-        # _, (_, doc_embedding) = self.doc_embedding_layer(word_embedding)
-        # return doc_embedding.squeeze(dim=0)
-        output, (_, _) = self.doc_embedding_layer(word_embedding)
-        output, _ = pad_packed_sequence(output, batch_first=True)
-        doc_embedding = torch.max(output, dim=1).values
-        return doc_embedding
+        _, (_, doc_embedding) = self.doc_embedding_layer(word_embedding)
+        return doc_embedding.squeeze(dim=0)
+        # output, (_, _) = self.doc_embedding_layer(word_embedding)
+        # output, _ = pad_packed_sequence(output, batch_first=True)
+        # doc_embedding = torch.max(output, dim=1).values
+        # return doc_embedding
 
     def forward(self,
                 user_reviews_words: torch.LongTensor, user_reviews_lengths: torch.LongTensor,
                 item_reviews_words: torch.LongTensor, item_reviews_lengths: torch.LongTensor,
                 query: torch.LongTensor,
-                is_training: bool,
+                mode,
                 negative_item_reviews_words: torch.LongTensor = None,
                 negative_item_reviews_lengths: torch.LongTensor = None):
+        if mode == 'output_embedding':
+            item_reviews_embedding = self.embedding(item_reviews_words, item_reviews_lengths)
+            query_embedding = self.embedding(query.unsqueeze(dim=0), torch.LongTensor([len(query)]))
+            item_entity = self.attention_layer(item_reviews_embedding, query_embedding)
+            return item_entity
 
         user_reviews_embedding = self.embedding(user_reviews_words, user_reviews_lengths)
         item_reviews_embedding = self.embedding(item_reviews_words, item_reviews_lengths)
@@ -114,13 +128,13 @@ class Model(nn.Module):
 
         # positive = torch.cosine_similarity(personalized_model, item_entity, dim=0, eps=1e-10)
 
-        if is_training:
+        if mode == 'train':
             negative_item_reviews_embedding = self.embedding(negative_item_reviews_words, negative_item_reviews_lengths)
             negative_item_entity = self.attention_layer(negative_item_reviews_embedding, query_embedding)
             # negative_item_entity = torch.sum(negative_item_reviews_embedding, dim=0)
-            negative = torch.cosine_similarity(personalized_model, negative_item_entity, dim=0, eps=1e-10)
+            # negative = torch.cosine_similarity(personalized_model, negative_item_entity, dim=0, eps=1e-10)
             # pair_loss = torch.relu(self.gamma - positive + negative)
             # return torch.relu(pair_loss)
             return personalized_model.unsqueeze(dim=0), item_entity.unsqueeze(dim=0), negative_item_entity.unsqueeze(dim=0)
-        else:
+        elif mode == 'test':
             return personalized_model.unsqueeze(dim=0), item_entity.unsqueeze(dim=0)

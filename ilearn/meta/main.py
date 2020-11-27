@@ -9,9 +9,10 @@ from torch import nn, optim
 
 from AmazonDataset import AmazonDataset
 from Model import Model
+from evaluate import metrics
 
 if __name__ == '__main__':
-    torch.backends.cudnn.benchmark = True
+    torch.backends.cudnn.enabled = False
     parser = ArgumentParser()
     # ------------------------------------Dataset Parameters------------------------------------
     parser.add_argument('--dataset',
@@ -53,7 +54,7 @@ if __name__ == '__main__':
 
     query_path = os.path.join(config.processed_path, '{}_query.json'.format(config.dataset))
     asin_sample_path = config.processed_path + '{}_asin_sample.json'.format(config.dataset)
-    word_dict_path = os.path.join(config.processed_path, '{}_word_dict.json'.format(config.dataset));
+    word_dict_path = os.path.join(config.processed_path, '{}_word_dict.json'.format(config.dataset))
 
     query_dict = json.load(open(query_path, 'r'))
     asin_dict = json.load(open(asin_sample_path, 'r'))
@@ -75,14 +76,15 @@ if __name__ == '__main__':
     train_loader = DataLoader(train_dataset, drop_last=True, batch_size=1, shuffle=True, num_workers=0,
                               collate_fn=AmazonDataset.collect_fn)
     # valid_loader = DataLoader(valid_dataset, batch_size=config['dataset']['batch_size'], shuffle=False, num_workers=0)
-    test_loader = DataLoader(test_dataset, batch_size=1, shuffle=False, num_workers=0)
+    test_loader = DataLoader(test_dataset, batch_size=1, shuffle=False, num_workers=0,
+                             collate_fn=AmazonDataset.collect_fn)
 
     # ------------------------------------Model Construction------------------------------------
     # word_dict starts from 1
     model = Model(len(word_dict)+1, config.word_embedding_size, config.doc_embedding_size, config.attention_hidden_dim)
     model.to(config.device)
 
-    criterion = nn.TripletMarginLoss(margin=config.margin)
+    criterion = nn.TripletMarginLoss(margin=config.margin, eps=1e-4)
     local_optimizer = optim.Adam(model.local_parameters, lr=0.01)
     global_optimizer = optim.Adam(model.parameters(), lr=0.01)
 
@@ -105,10 +107,11 @@ if __name__ == '__main__':
 
                 pred, pos, neg = model(user_reviews_words, user_reviews_lengths,
                                        support_item_reviews_words[i], support_item_reviews_lengths[i],
-                                       support_queries[i], True,
+                                       support_queries[i], 'train',
                                        support_negative_reviews_words[i], support_negative_reviews_lengths[i])
                 loss = criterion(pred, pos, neg)
                 loss.backward()
+
                 local_optimizer.step()
 
             # ---------Global Update---------
@@ -119,14 +122,17 @@ if __name__ == '__main__':
 
                 pred, pos, neg = model(user_reviews_words, user_reviews_lengths,
                                        query_item_reviews_words[i], query_item_reviews_lengths[i],
-                                       query_queries[i], True,
+                                       query_queries[i], 'train',
                                        query_negative_reviews_words[i], query_negative_reviews_lengths[i])
                 loss = criterion(pred, pos, neg)
+                loss.backward()
                 global_optimizer.step()
 
+            Mrr, Hr, Ndcg = metrics(model, test_loader, 20, local_optimizer, criterion)
             print(
                 "Running Epoch {:03d}/{:03d}".format(epoch + 1, config.epochs),
                 "loss:{:.3f}".format(float(loss)),
+                "Mrr {:.3f}, Hr {:.3f}, Ndcg {:.3f}".format(Mrr, Hr, Ndcg),
                 "costs:", time.strftime("%H: %M: %S", time.gmtime(time.time() - start_time)))
 
     print(model.local_parameters)

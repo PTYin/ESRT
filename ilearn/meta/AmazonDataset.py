@@ -127,6 +127,13 @@ class AmazonDataset(Dataset):
             neg = np.random.choice(list(self.item_reviews_words.keys()), 1, replace=False)
         return neg[0]
 
+    def neg_candidates(self, item):
+        """random select 99 candidates to participate test evaluation"""
+        candidates = np.random.choice(set(self.item_reviews_words.keys()) - {item, }, 1, replace=False)
+        candidates_reviews_words = list(map(lambda candidate: self.item_reviews_words[candidate], candidates))
+        candidates_reviews_lengths = list(map(lambda candidate: self.item_reviews_lengths[candidate], candidates))
+
+
     @staticmethod
     def init(full_df: DataFrame):
         users = full_df.groupby("userID")
