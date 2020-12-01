@@ -29,7 +29,12 @@ def extraction(meta_path, review_df, stop_words, count):
         for line in g:
             line = eval(line)
             asin = line['asin']
-            categories[asin] = line['categories']
+            if 'category' in line:
+                categories[asin] = [line['category']]
+            elif 'categories' in line:
+                categories[asin] = line['categories']
+            else:
+                raise Exception('category or categories tag not in metadata')
             related = line['related'] if 'related' in line else None
 
             # fill the also_related dictionary
@@ -246,8 +251,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--review_file',
                         type=str,
-                        default='reviews_Musical_Instruments_5.json.gz',
-                        help="5-core review file")
+                        default='reviews_Musical_Instruments.json.gz',
+                        help="review file")
     parser.add_argument('--meta_file',
                         type=str,
                         default='meta_Musical_Instruments.json.gz',
@@ -266,10 +271,10 @@ def main():
                         help="define the maximum number of users per product, no maximum number if None")
 
     parser.add_argument('--dataset', type=str, default='Musical_Instruments')
-    parser.add_argument('--main_path', type=str, default='/home/share/yinxiangkun/data/cold_start/')
+    parser.add_argument('--main_path', type=str, default='/home/yxk/share/yinxiangkun/data/cold_start/')
     parser.add_argument('--stop_file', type=str, default='../../seq_utils/TranSearch/stopwords.txt')
     parser.add_argument('--processed_path', type=str,
-                        default='/home/share/yinxiangkun/processed/cold_start/ordinary/Musical_Instruments/')
+                        default='/home/yxk/share/yinxiangkun/processed/cold_start/ordinary/Musical_Instruments/')
 
     global FLAGS
     FLAGS = parser.parse_args()

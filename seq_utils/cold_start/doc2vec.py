@@ -11,8 +11,6 @@ import pandas as pd
 from ast import literal_eval
 from gensim.models import doc2vec
 
-import config
-
 
 parser = argparse.ArgumentParser()
 
@@ -30,10 +28,10 @@ parser.add_argument("--window_size",
 #     help="the raw image feature file")
 
 parser.add_argument('--dataset', type=str, default='Musical_Instruments')
-parser.add_argument('--main_path', type=str, default='/home/share/yinxiangkun/data/cold_start/')
+parser.add_argument('--main_path', type=str, default='/home/yxk/share/yinxiangkun/data/cold_start/')
 parser.add_argument('--stop_file', type=str, default='../../seq_utils/TranSearch/stopwords.txt')
 parser.add_argument('--processed_path', type=str,
-                    default='/home/share/yinxiangkun/processed/cold_start/ordinary/Musical_Instruments/')
+                    default='/home/yxk/share/yinxiangkun/processed/cold_start/ordinary/Musical_Instruments/')
 
 FLAGS = parser.parse_args()
 
@@ -100,20 +98,20 @@ products = df['asin'].tolist()
 item_map = dict(zip(products, range(len(products))))
 json.dump(item_map, open(os.path.join(FLAGS.processed_path, '{}_item_map.json'.format(FLAGS.dataset)), 'w'))
 
-for metaFilter in ['TrainSupport', 'TrainQuery', 'TestSupport', 'TestQuery']:
-    target_df = df[df["metaFilter"] == metaFilter]
-    target_df = target_df.set_index(['userID'])
-    users = target_df.index.unique()
-    target_data = {}
-
-    for user in users:
-        # ---------------------------------Support---------------------------------
-        target_items = pd.Series(target_df.loc[user, 'asin'], dtype=str).map(item_map).tolist()
-        target_queries = pd.Series(target_df.loc[user, 'query_'], dtype=str).map(lambda query: model.docvecs[query_dict[query]].tolist()).tolist()
-        target_data[user] = {'items': target_items, 'queries': target_queries}
-
-    json.dump(target_data, open(os.path.join(FLAGS.processed_path, '{}_{}_data.json'.format(FLAGS.dataset, metaFilter)),
-                                'w'))
+# for metaFilter in ['TrainSupport', 'TrainQuery', 'TestSupport', 'TestQuery']:
+#     target_df = df[df["metaFilter"] == metaFilter]
+#     target_df = target_df.set_index(['userID'])
+#     users = target_df.index.unique()
+#     target_data = {}
+#
+#     for user in users:
+#         # ---------------------------------meta---------------------------------
+#         target_items = pd.Series(target_df.loc[user, 'asin'], dtype=str).map(item_map).tolist()
+#         target_queries = pd.Series(target_df.loc[user, 'query_'], dtype=str).map(lambda query: model.docvecs[query_dict[query]].tolist()).tolist()
+#         target_data[user] = {'items': target_items, 'queries': target_queries}
+#
+#     json.dump(target_data, open(os.path.join(FLAGS.processed_path, '{}_{}_data.json'.format(FLAGS.dataset, metaFilter)),
+#                                 'w'))
 
 doc2model_path = FLAGS.processed_path + '{}_doc2model'.format(FLAGS.dataset)
 query_path = FLAGS.processed_path + '{}_query.json'.format(FLAGS.dataset)

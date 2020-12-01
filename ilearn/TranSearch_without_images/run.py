@@ -65,8 +65,8 @@ def train(sess, train_iter, item_size, user_size,
         print("Creating model with fresh parameters.")
         sess.run(tf.global_variables_initializer())
 
-        if FLAGS.mode != 'end':
-            model.pre_train.restore(sess, './Variables/pre_train.ckpt')
+        # if FLAGS.mode != 'end':
+        #     model.pre_train.restore(sess, './Variables/pre_train.ckpt')
 
     ############################### Training ####################################
     count = 0
@@ -136,10 +136,10 @@ if __name__ == '__main__':
     FLAGS = tf.app.flags.FLAGS
 
     tf.app.flags.DEFINE_string('dataset', 'Musical_Instruments', 'help')
-    tf.app.flags.DEFINE_string('main_path', '/home/share/yinxiangkun/data/cold_start/', 'help')
+    tf.app.flags.DEFINE_string('main_path', '/home/yxk/share/yinxiangkun/data/cold_start/', 'help')
     tf.app.flags.DEFINE_string('stop_file', '../../seq_utils/TranSearch/stopwords.txt', 'help')
     tf.app.flags.DEFINE_string('processed_path',
-                               '/home/share/yinxiangkun/processed/cold_start/ordinary/Musical_Instruments/', 'help')
+                               '/home/yxk/share/yinxiangkun/processed/cold_start/ordinary/Musical_Instruments/', 'help')
 
     tf.app.flags.DEFINE_integer('batch_size', 256,
                                 'size of mini-batch.')
@@ -149,7 +149,7 @@ if __name__ == '__main__':
                                 'the size for embedding user and item.')
     tf.app.flags.DEFINE_integer('topK', 20,
                                 'truncated top items.')
-    tf.app.flags.DEFINE_integer('epochs', 10,
+    tf.app.flags.DEFINE_integer('epochs', 40,
                                 'the number of epochs.')
     tf.app.flags.DEFINE_string('model_dir', './TranSearch/',
                                'the dir for saving model.')

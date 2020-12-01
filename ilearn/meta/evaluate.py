@@ -3,6 +3,7 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 
+from AmazonDataset import AmazonDataset
 
 def mrr(gt_item, pred_items):
     if gt_item in pred_items:
@@ -25,14 +26,14 @@ def ndcg(gt_item, pred_items):
     return 0
 
 
-def metrics(model, test_loader, top_k, local_optimizer, criterion):
+def metrics(model, test_dataset, test_loader, top_k, local_optimizer, criterion):
     Mrr, Hr, Ndcg = [], [], []
     loss = 0  # No effect, ignore this line
     for _, (user_reviews_words, user_reviews_lengths,
             support_item_reviews_words, support_item_reviews_lengths, support_queries,
             support_negative_reviews_words, support_negative_reviews_lengths,
             query_item_reviews_words, query_item_reviews_lengths, query_queries,
-            query_negative_reviews_words, query_negative_reviews_lengths) in enumerate(test_loader):
+            query_negative_reviews_words, query_negative_reviews_lengths, query_item_asin) in enumerate(test_loader):
 
         # ---------Local Update---------
         model.train()
@@ -43,8 +44,8 @@ def metrics(model, test_loader, top_k, local_optimizer, criterion):
 
             pred, pos, neg = model(user_reviews_words, user_reviews_lengths,
                                    support_item_reviews_words[i], support_item_reviews_lengths[i],
-                                   support_queries[i], 'train', support_negative_reviews_words,
-                                   support_negative_reviews_lengths,)
+                                   support_queries[i], 'train', support_negative_reviews_words[i],
+                                   support_negative_reviews_lengths[i],)
             loss = criterion(pred, pos, neg)
             loss.backward()
 
@@ -56,17 +57,19 @@ def metrics(model, test_loader, top_k, local_optimizer, criterion):
         pred, pos = model(user_reviews_words, user_reviews_lengths,
                           query_item_reviews_words[0], query_item_reviews_lengths[0],
                           query_queries[0], 'test')
+        candidates_reviews_words, candidates_reviews_lengths = test_dataset.neg_candidates(query_item_asin)
         candidates = []
         for i in range(99):
             # ---------Construct Batch---------
             candidates.append(model(user_reviews_words, user_reviews_lengths,
-                                    query_item_reviews_words[i], query_item_reviews_lengths[i],
-                                    query_queries[i], 'output_embedding'))
+                                    candidates_reviews_words[i], candidates_reviews_lengths[i],
+                                    query_queries[0], 'output_embedding'))
         candidates = [pos] + candidates
-        candidates = torch.tensor(candidates)
+        candidates = torch.stack(candidates, dim=0)
 
         scores = F.pairwise_distance(pred.repeat(100, 1), candidates)
         _, ranking_list = scores.sort(dim=-1, descending=True)
+        ranking_list = ranking_list.tolist()
         top_idx = []
         while len(top_idx) < top_k:
             candidate_item = ranking_list.pop()

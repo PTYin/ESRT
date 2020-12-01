@@ -137,4 +137,4 @@ class Model(nn.Module):
             # return torch.relu(pair_loss)
             return personalized_model.unsqueeze(dim=0), item_entity.unsqueeze(dim=0), negative_item_entity.unsqueeze(dim=0)
         elif mode == 'test':
-            return personalized_model.unsqueeze(dim=0), item_entity.unsqueeze(dim=0)
+            return personalized_model, item_entity

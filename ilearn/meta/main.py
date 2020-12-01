@@ -12,14 +12,14 @@ from Model import Model
 from evaluate import metrics
 
 if __name__ == '__main__':
-    torch.backends.cudnn.enabled = False
+    torch.backends.cudnn.enabled = True
     parser = ArgumentParser()
     # ------------------------------------Dataset Parameters------------------------------------
     parser.add_argument('--dataset',
                         default='Musical_Instruments',
                         help='name of the dataset')
     parser.add_argument('--processed_path',
-                        default='/home/share/yinxiangkun/processed/cold_start/ordinary/Musical_Instruments/',
+                        default='/home/yxk/share/yinxiangkun/processed/cold_start/ordinary/Musical_Instruments/',
                         help="preprocessed path of the raw data")
     # ------------------------------------Experiment Setup------------------------------------
     parser.add_argument('--device',
@@ -73,7 +73,7 @@ if __name__ == '__main__':
 
     train_dataset = AmazonDataset(train_support, train_query, train_df, query_dict, asin_dict, config.device)
     test_dataset = AmazonDataset(test_support, test_query, train_df, query_dict, asin_dict, config.device)
-    train_loader = DataLoader(train_dataset, drop_last=True, batch_size=1, shuffle=True, num_workers=0,
+    train_loader = DataLoader(train_dataset, drop_last=True, batch_size=3, shuffle=True, num_workers=0,
                               collate_fn=AmazonDataset.collect_fn)
     # valid_loader = DataLoader(valid_dataset, batch_size=config['dataset']['batch_size'], shuffle=False, num_workers=0)
     test_loader = DataLoader(test_dataset, batch_size=1, shuffle=False, num_workers=0,
@@ -97,7 +97,8 @@ if __name__ == '__main__':
                 support_item_reviews_words, support_item_reviews_lengths, support_queries,
                 support_negative_reviews_words, support_negative_reviews_lengths,
                 query_item_reviews_words, query_item_reviews_lengths, query_queries,
-                query_negative_reviews_words, query_negative_reviews_lengths) in enumerate(train_loader):
+                query_negative_reviews_words, query_negative_reviews_lengths, _) in enumerate(train_loader):
+            # model.train()
 
             # ---------Local Update---------
             model.zero_grad()
@@ -128,12 +129,12 @@ if __name__ == '__main__':
                 loss.backward()
                 global_optimizer.step()
 
-            Mrr, Hr, Ndcg = metrics(model, test_loader, 20, local_optimizer, criterion)
-            print(
-                "Running Epoch {:03d}/{:03d}".format(epoch + 1, config.epochs),
-                "loss:{:.3f}".format(float(loss)),
-                "Mrr {:.3f}, Hr {:.3f}, Ndcg {:.3f}".format(Mrr, Hr, Ndcg),
-                "costs:", time.strftime("%H: %M: %S", time.gmtime(time.time() - start_time)))
+        Mrr, Hr, Ndcg = metrics(model, test_dataset, test_loader, 20, local_optimizer, criterion)
+        print(
+            "Running Epoch {:03d}/{:03d}".format(epoch + 1, config.epochs),
+            "loss:{:.3f}".format(float(loss)),
+            "Mrr {:.3f}, Hr {:.3f}, Ndcg {:.3f}".format(Mrr, Hr, Ndcg),
+            "costs:", time.strftime("%H: %M: %S", time.gmtime(time.time() - start_time)))
 
     print(model.local_parameters)
 

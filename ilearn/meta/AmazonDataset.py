@@ -100,6 +100,7 @@ class AmazonDataset(Dataset):
         support_queries = pd.Series(self.support_df.loc[user, 'queryWords'], dtype=str).map(
             lambda query: torch.LongTensor(eval(query)).to(self.device)).tolist()
 
+        query_item_asin = self.query_df.loc[user, 'asin']  # useful iff TestQuery
         pd.Series(self.query_df.loc[user, 'asin'], dtype=str).apply(
             self.__get_instance, args=(query_item_reviews_words,
                                        query_item_reviews_lengths,
@@ -112,7 +113,7 @@ class AmazonDataset(Dataset):
                 support_item_reviews_words, support_item_reviews_lengths, support_queries,
                 support_negative_reviews_words, support_negative_reviews_lengths,
                 query_item_reviews_words, query_item_reviews_lengths, query_queries,
-                query_negative_reviews_words, query_negative_reviews_lengths)
+                query_negative_reviews_words, query_negative_reviews_lengths, query_item_asin)
 
     def sample_neg(self, item):
         """ Take the also_view or buy_after_viewing as negative samples. """
@@ -129,10 +130,11 @@ class AmazonDataset(Dataset):
 
     def neg_candidates(self, item):
         """random select 99 candidates to participate test evaluation"""
-        candidates = np.random.choice(set(self.item_reviews_words.keys()) - {item, }, 1, replace=False)
+        a = list(self.item_reviews_words.keys() - {item, })
+        candidates = np.random.choice(a, 99, replace=False)
         candidates_reviews_words = list(map(lambda candidate: self.item_reviews_words[candidate], candidates))
         candidates_reviews_lengths = list(map(lambda candidate: self.item_reviews_lengths[candidate], candidates))
-
+        return candidates_reviews_words, candidates_reviews_lengths
 
     @staticmethod
     def init(full_df: DataFrame):
@@ -143,6 +145,15 @@ class AmazonDataset(Dataset):
 
     @staticmethod
     def collect_fn(batch):
+
+        for record in batch:
+            (batch_user_reviews_words, batch_user_reviews_lengths,
+             batch_support_item_reviews_words, batch_support_item_reviews_lengths, batch_support_queries,
+             batch_support_negative_reviews_words, batch_support_negative_reviews_lengths,
+             batch_query_item_reviews_words, batch_query_item_reviews_lengths, batch_query_queries,
+             batch_query_negative_reviews_words, batch_query_negative_reviews_lengths, batch_query_item_asin) = record
+
+
         return batch[0]
 
     # @staticmethod

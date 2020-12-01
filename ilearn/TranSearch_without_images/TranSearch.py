@@ -226,7 +226,7 @@ class TranSearch(object):
 	def summary(self):
 		""" Create summaries to write on tensorboard. """
 		self.writer = tf.summary.FileWriter(
-					'/home/share/yinxiangkun/graphs/TranSearch', tf.get_default_graph())
+					'/home/yxk/share/yinxiangkun/graphs/TranSearch', tf.get_default_graph())
 		with tf.name_scope("summaries"):
 			tf.summary.scalar('loss', self.final_loss)
 			self.summary_op = tf.summary.merge_all()

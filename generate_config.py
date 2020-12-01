@@ -5,10 +5,10 @@ LSE_template = '''arch:
   learning_algorithm: "esrt.models.LSE"
   dataset_type: "esrt.dataset.LSEDataset"
 data:
-  data_dir: "/home/share/yinxiangkun/transformed/cold_start/{task}/{dataset}/seq_min_count5/"
-  input_train_dir: "/home/share/yinxiangkun/transformed/cold_start/{task}/{dataset}/seq_min_count5/seq_query_split/"
-  model_dir: "/home/share/yinxiangkun/saved/cold_start/{task}/LSE_{embedding_size}_{dataset}/"
-  logging_dir: "/home/share/yinxiangkun/log/cold_start/{task}/LSE_{embedding_size}_{dataset}/"
+  data_dir: "/home/yxk/share/yinxiangkun/transformed/cold_start/{task}/{dataset}/seq_min_count5/"
+  input_train_dir: "/home/yxk/share/yinxiangkun/transformed/cold_start/{task}/{dataset}/seq_min_count5/seq_query_split/"
+  model_dir: "/home/yxk/share/yinxiangkun/saved/cold_start/{task}/LSE_{embedding_size}_{dataset}/"
+  logging_dir: "/home/yxk/share/yinxiangkun/log/cold_start/{task}/LSE_{embedding_size}_{dataset}/"
 
 experiment:
   subsampling_rate: 0.0001
@@ -36,10 +36,10 @@ HEM_template = '''arch:
   learning_algorithm: "esrt.models.HEM"
   dataset_type: "esrt.dataset.HEMDataset"
 data:
-  data_dir: "/home/share/yinxiangkun/transformed/cold_start/{task}/{dataset}/seq_min_count5/"
-  input_train_dir: "/home/share/yinxiangkun/transformed/cold_start/{task}/{dataset}/seq_min_count5/seq_query_split/"
-  model_dir: "/home/share/yinxiangkun/saved/cold_start/{task}/HEM_{embedding_size}_{dataset}/"
-  logging_dir: "/home/share/yinxiangkun/log/cold_start/{task}/HEM_{embedding_size}_{dataset}/"
+  data_dir: "/home/yxk/share/yinxiangkun/transformed/cold_start/{task}/{dataset}/seq_min_count5/"
+  input_train_dir: "/home/yxk/share/yinxiangkun/transformed/cold_start/{task}/{dataset}/seq_min_count5/seq_query_split/"
+  model_dir: "/home/yxk/share/yinxiangkun/saved/cold_start/{task}/HEM_{embedding_size}_{dataset}/"
+  logging_dir: "/home/yxk/share/yinxiangkun/log/cold_start/{task}/HEM_{embedding_size}_{dataset}/"
 
 experiment:
   subsampling_rate: 0.0001
@@ -68,10 +68,10 @@ AEM_template = '''arch:
   learning_algorithm: "esrt.models.AEM"
   dataset_type: "esrt.dataset.AEMDataset"
 data:
-  data_dir: "/home/share/yinxiangkun/transformed/cold_start/{task}/{dataset}/seq_min_count5/"
-  input_train_dir: "/home/share/yinxiangkun/transformed/cold_start/{task}/{dataset}/seq_min_count5/seq_query_split/"
-  model_dir: "/home/share/yinxiangkun/saved/cold_start/{task}/AEM_{embedding_size}_{dataset}/"
-  logging_dir: "/home/share/yinxiangkun/log/cold_start/{task}/AEM_{embedding_size}_{dataset}/"
+  data_dir: "/home/yxk/share/yinxiangkun/transformed/cold_start/{task}/{dataset}/seq_min_count5/"
+  input_train_dir: "/home/yxk/share/yinxiangkun/transformed/cold_start/{task}/{dataset}/seq_min_count5/seq_query_split/"
+  model_dir: "/home/yxk/share/yinxiangkun/saved/cold_start/{task}/AEM_{embedding_size}_{dataset}/"
+  logging_dir: "/home/yxk/share/yinxiangkun/log/cold_start/{task}/AEM_{embedding_size}_{dataset}/"
 
 experiment:
   subsampling_rate: 0.0001
@@ -104,10 +104,10 @@ ZAM_template = '''arch:
   learning_algorithm: "esrt.models.ZAM"
   dataset_type: "esrt.dataset.ZAMDataset"
 data:
-  data_dir: "/home/share/yinxiangkun/transformed/cold_start/{task}/{dataset}/seq_min_count5/"
-  input_train_dir: "/home/share/yinxiangkun/transformed/cold_start/{task}/{dataset}/seq_min_count5/seq_query_split/"
-  model_dir: "/home/share/yinxiangkun/saved/cold_start/{task}/ZAM_{embedding_size}_{dataset}/"
-  logging_dir: "/home/share/yinxiangkun/log/cold_start/{task}/ZAM_{embedding_size}_{dataset}/"
+  data_dir: "/home/yxk/share/yinxiangkun/transformed/cold_start/{task}/{dataset}/seq_min_count5/"
+  input_train_dir: "/home/yxk/share/yinxiangkun/transformed/cold_start/{task}/{dataset}/seq_min_count5/seq_query_split/"
+  model_dir: "/home/yxk/share/yinxiangkun/saved/cold_start/{task}/ZAM_{embedding_size}_{dataset}/"
+  logging_dir: "/home/yxk/share/yinxiangkun/log/cold_start/{task}/ZAM_{embedding_size}_{dataset}/"
 
 experiment:
   subsampling_rate: 0.0001
@@ -157,7 +157,7 @@ def generate(task, model, dataset, embedding_size):
 def main():
     datasets = ['Musical_Instruments']
     models = ['LSE', 'HEM', 'AEM', 'ZAM']
-    embedding_size = 'embed+0'
+    embedding_size = ['embed+0']
     max_users_list = [1, 3, 5]
     max_products_list = [1, 3, 5]
     # Ordinary
